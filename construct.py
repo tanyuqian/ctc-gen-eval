@@ -36,6 +36,8 @@ def construct_summ(example, para_generator, hallu_generator):
 
     summ_sents = None
     for ratio in np.arange(0.1, 1., 0.1):
+        if len(example['src'].split()) > 1000:
+            example['src'] = ' '.join(example['src'].split()[:1000])
         summ_sents = summarizer.summarize(
             example['src'], ratio=ratio).split('\n')
 
