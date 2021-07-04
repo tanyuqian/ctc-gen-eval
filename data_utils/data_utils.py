@@ -154,7 +154,7 @@ def get_examples_for_discriminative_construction(dataset_name):
 
 def get_test_examples(dataset_name, aspect, dialog_context):
     if dataset_name in ['qags_cnndm', 'qags_xsum', 'summeval']:
-        raw_examples = json.load(open(f'../data/{dataset_name}.json'))
+        raw_examples = json.load(open(f'data/{dataset_name}.json'))
 
         examples = []
         for raw_example in raw_examples:
@@ -171,7 +171,7 @@ def get_test_examples(dataset_name, aspect, dialog_context):
                     score=raw_example[aspect]))
 
     elif dataset_name in ['persona_chat', 'topical_chat']:
-        raw_examples = json.load(open(f'../data/{dataset_name}.json'))
+        raw_examples = json.load(open(f'data/{dataset_name}.json'))
         examples = []
         for raw_example in raw_examples:
             if dataset_name == 'topical_chat':
