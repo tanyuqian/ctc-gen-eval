@@ -1,6 +1,8 @@
 import json
 import random
 import cleantext
+from glob import glob
+import pandas
 from collections import namedtuple
 from nltk import sent_tokenize
 from datasets import load_dataset
@@ -10,6 +12,9 @@ from torch.utils.data import DataLoader
 
 TokenClassificationExample = namedtuple('TokenClassificationExample', [
     'context', 'input_text', 'labels'])
+
+
+TestExample = namedtuple('TestExample', ['input_text', 'context', 'score'])
 
 
 def get_dataloaders(dataset, batch_size, num_workers, shuffle, collate_fn):
@@ -119,8 +124,8 @@ def get_examples_for_discriminative_construction(dataset_name):
             })
     elif dataset_name == 'yelp':
         random.seed(159)
-        for line in open('data/yelp/sentiment.train.0').readlines() + \
-                    open('data/yelp/sentiment.train.1').readlines():
+        for line in open('../data/yelp/sentiment.train.0').readlines() + \
+                    open('../data/yelp/sentiment.train.1').readlines():
             if line.strip() != '':
                 examples.append({
                     'idx': len(examples),
@@ -136,12 +141,55 @@ def get_examples_for_discriminative_construction(dataset_name):
                 'ref': text_clean(d['candidates'][-1])
             })
     elif dataset_name == 'topical_chat':
-        for d in json.load(open('data/topical_chat/dialogs.json')):
+        for d in json.load(open('../data/topical_chat/dialogs.json')):
             examples.append({
                 'idx': len(examples),
                 'history': text_clean(d['history']),
                 'fact': text_clean(d['fact']),
                 'ref': text_clean(d['response'])
             })
+
+    return examples
+
+
+def get_test_examples(dataset_name, aspect, dialog_context):
+    if dataset_name in ['qags_cnndm', 'qags_xsum', 'summeval']:
+        raw_examples = json.load(open(f'../data/{dataset_name}.json'))
+
+        examples = []
+        for raw_example in raw_examples:
+            if aspect == 'consistency':
+                examples.append(TestExample(
+                    context=raw_example['document'],
+                    input_text=raw_example['summary'],
+                    score=raw_example[aspect]))
+
+            elif aspect == 'relevance':
+                examples.append(TestExample(
+                    context=' '.join(raw_example['references']),
+                    input_text=raw_example['summary'],
+                    score=raw_example[aspect]))
+
+    elif dataset_name in ['persona_chat', 'topical_chat']:
+        raw_examples = json.load(open(f'../data/{dataset_name}.json'))
+        examples = []
+        for raw_example in raw_examples:
+            if dataset_name == 'topical_chat':
+                fact = 'fact: ' + raw_example['fact']
+            else:
+                fact = raw_example['fact']
+            history = raw_example['dialog_history']
+
+            if dialog_context == 'fact':
+                context = fact
+            elif dialog_context == 'history':
+                context = history
+            elif dialog_context == 'fact_history':
+                context = '\n\n\n'.join([fact.strip(), history.strip()])
+
+            examples.append(TestExample(
+                context=context,
+                input_text=raw_example['response'],
+                score=raw_example[aspect]))
 
     return examples
