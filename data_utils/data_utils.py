@@ -124,8 +124,8 @@ def get_examples_for_discriminative_construction(dataset_name):
             })
     elif dataset_name == 'yelp':
         random.seed(159)
-        for line in open('../data/yelp/sentiment.train.0').readlines() + \
-                    open('../data/yelp/sentiment.train.1').readlines():
+        for line in open('data/yelp/sentiment.train.0').readlines() + \
+                    open('data/yelp/sentiment.train.1').readlines():
             if line.strip() != '':
                 examples.append({
                     'idx': len(examples),
@@ -141,7 +141,7 @@ def get_examples_for_discriminative_construction(dataset_name):
                 'ref': text_clean(d['candidates'][-1])
             })
     elif dataset_name == 'topical_chat':
-        for d in json.load(open('../data/topical_chat/dialogs.json')):
+        for d in json.load(open('data/topical_chat/dialogs.json')):
             examples.append({
                 'idx': len(examples),
                 'history': text_clean(d['history']),

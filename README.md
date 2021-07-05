@@ -3,6 +3,12 @@
 ## Preparation
 
 ```
+cd data/
+unzip topical_chat.zip
+unzip yelp.zip
+```
+
+```
 pip install -r requirements.txt
 python -m spacy download en
 ```
