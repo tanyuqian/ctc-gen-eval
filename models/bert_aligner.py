@@ -43,7 +43,7 @@ class BERTAligner(BERTScorer, Aligner):
         return sim, r_tokens, h_tokens
 
     def align(self, input_text, context):
-        mat, context_tokens, input_tokens = self._model.get_sim_matrix(
+        mat, context_tokens, input_tokens = self.get_sim_matrix(
             candidate=input_text, reference=context)
 
         preds = torch.max(mat, dim=-1).values.tolist()
