@@ -92,9 +92,9 @@ def get_context(constructed_doc, dataset_name, dialog_context):
             history = constructed_doc['history']
 
         if dialog_context == 'fact_history':
-            context = '\n\n'.join([fact, history])
+            context = '\n\n\n'.join([fact.strip(), history.strip()])
         elif dialog_context == 'history_fact':
-            context = '\n\n'.join([history, fact])
+            context = '\n\n\n'.join([history.strip(), fact.strip()])
         elif dialog_context == 'fact':
             context = fact
         elif dialog_context == 'history':
@@ -186,6 +186,8 @@ def get_test_examples(dataset_name, aspect, dialog_context):
                 context = history
             elif dialog_context == 'fact_history':
                 context = '\n\n\n'.join([fact.strip(), history.strip()])
+            elif dialog_context == 'history_fact':
+                context = '\n\n\n'.join([history.strip(), fact.strip()])
 
             examples.append(TestExample(
                 context=context,
