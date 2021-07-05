@@ -93,6 +93,8 @@ def get_context(constructed_doc, dataset_name, dialog_context):
 
         if dialog_context == 'fact_history':
             context = '\n\n'.join([fact, history])
+        elif dialog_context == 'history_fact':
+            context = '\n\n'.join([history, fact])
         elif dialog_context == 'fact':
             context = fact
         elif dialog_context == 'history':
