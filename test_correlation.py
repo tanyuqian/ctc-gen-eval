@@ -12,16 +12,16 @@ from scipy.stats.stats import spearmanr, pearsonr, kendalltau
 
 def main(dataset_name='qags_xsum',
          aspect='consistency',
-         aligner='disc',
+         aligner_type='disc',
          disc_init=None,
          dialog_context='fact_history',
          aggr_type='mean'):
 
-    if aligner == 'disc':
+    if aligner_type == 'disc':
         aligner = DiscriminativeAligner.load_from_checkpoint(
             aggr_type=aggr_type, checkpoint_path=disc_init).to('cuda')
         aligner.eval()
-    elif aligner == 'bert':
+    elif aligner_type == 'bert':
         aligner = BERTAligner(
             aggr_type=aggr_type,
             lang='en', rescale_with_baseline=True, device='cuda')
@@ -56,7 +56,7 @@ def main(dataset_name='qags_xsum',
 
     os.makedirs(f'eval_results/{dataset_name}', exist_ok=True)
     output_path = \
-        f'eval_results/{dataset_name}/{aligner}_{aspect}_{aggr_type}.json'
+        f'eval_results/{dataset_name}/{aligner_type}_{aspect}_{aggr_type}.json'
     json.dump(all_preds, open(output_path, 'w'), indent=4)
 
 

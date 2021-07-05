@@ -57,7 +57,6 @@ def main(dataset_name, n_epochs=1, dialog_context=None):
         monitor='val_f1',
         mode='max',
         save_top_k=1,
-        save_last=True,
         verbose=True)
 
     trainer = pl.Trainer(
