@@ -9,6 +9,10 @@ from models.aligner import Aligner
 
 
 class BERTAligner(BERTScorer, Aligner):
+    def __init__(self, aggr_type, *args, **kwargs):
+        Aligner.__init__(self, aggr_type=aggr_type)
+        BERTScorer.__init__(self, *args, **kwargs)
+
     def get_sim_matrix(self, candidate, reference):
         assert isinstance(candidate, str)
         assert isinstance(reference, str)
