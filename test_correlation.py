@@ -23,6 +23,7 @@ def main(dataset_name='qags_xsum',
         aligner.eval()
     elif aligner == 'bert':
         aligner = BERTAligner(
+            aggr_type=aggr_type,
             lang='en', rescale_with_baseline=True, device='cuda')
 
     examples = get_test_examples(
