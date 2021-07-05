@@ -1,22 +1,29 @@
+import os
 import json
 import fire
 from tqdm import tqdm
 
 from data_utils.data_utils import get_test_examples
 from models.discriminative_aligner import DiscriminativeAligner
+from models.bert_aligner import BERTAligner
 
 from scipy.stats.stats import spearmanr, pearsonr, kendalltau
 
 
 def main(dataset_name='qags_xsum',
          aspect='consistency',
+         aligner='disc',
          disc_init=None,
          dialog_context='fact_history',
          aggr_type='mean'):
 
-    aligner = DiscriminativeAligner.load_from_checkpoint(
-        aggr_type=aggr_type, checkpoint_path=disc_init).to('cuda')
-    aligner.eval()
+    if aligner == 'disc':
+        aligner = DiscriminativeAligner.load_from_checkpoint(
+            aggr_type=aggr_type, checkpoint_path=disc_init).to('cuda')
+        aligner.eval()
+    elif aligner == 'bert':
+        aligner = BERTAligner(
+            lang='en', rescale_with_baseline=True, device='cuda')
 
     examples = get_test_examples(
         dataset_name=dataset_name, aspect=aspect, dialog_context=dialog_context)
@@ -46,8 +53,10 @@ def main(dataset_name='qags_xsum',
     print(f'spearman: {spearman_score:.4f}')
     print(f'kendall: {kendall_score:.4f}')
 
-    json.dump(all_preds, open(f'{dataset_name}_{aspect}_{aggr_type}.json', 'w'),
-              indent=4)
+    os.makedirs(f'eval_results/{dataset_name}', exist_ok=True)
+    output_path = \
+        f'eval_results/{dataset_name}/{aligner}_{aspect}_{aggr_type}.json'
+    json.dump(all_preds, open(output_path, 'w'), indent=4)
 
 
 if __name__ == '__main__':

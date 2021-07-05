@@ -1,8 +1,6 @@
 import json
 import random
 import cleantext
-from glob import glob
-import pandas
 from collections import namedtuple
 from nltk import sent_tokenize
 from datasets import load_dataset
