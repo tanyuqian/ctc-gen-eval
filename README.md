@@ -47,10 +47,12 @@ Checkpoints will be saved in ```ckpts/```.
 
 ```
 python test_correlation.py \
-    --dataset_name [xsum/persona_chat/...] \
+    --dataset_name [qags_cnndm/persona_chat/...] \
     --aspect [aspect] \
     --aligner_type [disc/bert] \
-    --disc_init [path_to_disc_ckpt]
+    --disc_init [path_to_disc_ckpt] \
+    --bert_model_type [roberta-large/bert-base-uncased] \
+    [--bert_rescale_with_baseline] \ 
     --dialog_context [fact/history/fact_history/history_fact] (only effective for dialog datasets) \
     --aggr_type [mean/sum]
 ```

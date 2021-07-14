@@ -42,10 +42,10 @@ def main(dataset_name='qags_xsum',
                 align_y_x = aligner.get_score(
                     input_text=example[0].input_text,
                     context=example[0].context)
-                align_y_r = aligner.get_score(
+                align_r_y = aligner.get_score(
                     input_text=example[1].input_text,
                     context=example[1].context)
-                pred_score = align_y_x * align_y_r
+                pred_score = align_y_x * align_r_y
 
                 all_preds.append({
                     'context_0': example[0].context,
@@ -53,7 +53,7 @@ def main(dataset_name='qags_xsum',
                     'context_1': example[1].context,
                     'input_text_1': example[1].input_text,
                     'align_y_x': align_y_x,
-                    'align_y_r': align_y_r,
+                    'align_r_y': align_r_y,
                     'pred_score': pred_score
                 })
 
