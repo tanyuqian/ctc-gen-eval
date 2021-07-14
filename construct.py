@@ -11,7 +11,7 @@ from models.hallucination_generator import HallucinationGenerator
 
 
 def construct_transduction(example, para_generator, hallu_generator):
-    para = para_generator.generate(input_text=example['text'])[0]
+    para = para_generator.generate(input_text=example['text'])
 
     if para is None:
         return None
