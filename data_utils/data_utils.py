@@ -165,10 +165,18 @@ def get_test_examples(dataset_name, aspect, dialog_context):
                     score=raw_example[aspect]))
 
             elif aspect == 'relevance':
-                examples.append(TestExample(
-                    context=' '.join(raw_example['references']),
-                    input_text=raw_example['summary'],
-                    score=raw_example[aspect]))
+                example = [
+                    TestExample(
+                        context=raw_example['document'],
+                        input_text=raw_example['summary'],
+                        score=raw_example[aspect]),
+                    TestExample(
+                        context=' '.join(raw_example['references']),
+                        input_text=raw_example['summary'],
+                        score=raw_example[aspect])
+                ]
+
+                examples.append(example)
 
     elif dataset_name in ['persona_chat', 'topical_chat']:
         raw_examples = json.load(open(f'data/{dataset_name}.json'))

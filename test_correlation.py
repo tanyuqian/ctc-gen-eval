@@ -32,8 +32,18 @@ def main(dataset_name='qags_xsum',
     all_preds = []
     pred_scores, true_scores = [], []
     for example in tqdm(examples, desc='Testing'):
-        pred_score = aligner.get_score(
-            input_text=example.input_text, context=example.context)
+        if isinstance(example, list):
+            if aspect == 'relevance':
+                align_y_x = aligner.get_score(
+                    input_text=example[0].input_text,
+                    context=example[0].context)
+                align_y_r = aligner.get_score(
+                    input_text=example[1].input_text,
+                    context=example[1].context)
+                pred_score = align_y_x * align_y_r
+        else:
+            pred_score = aligner.get_score(
+                input_text=example.input_text, context=example.context)
 
         all_preds.append({
             'context': example.context,
