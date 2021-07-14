@@ -51,6 +51,10 @@ def main(dataset_name='qags_xsum',
                     'align_y_r': align_y_r,
                     'pred_score': pred_score
                 })
+
+                if pred_score is not None:
+                    pred_scores.append(pred_score)
+                    true_scores.append(example[0].score)
         else:
             pred_score = aligner.get_score(
                 input_text=example.input_text, context=example.context)
@@ -61,9 +65,9 @@ def main(dataset_name='qags_xsum',
                 'pred_score': pred_score
             })
 
-        if pred_score is not None:
-            pred_scores.append(pred_score)
-            true_scores.append(example.score)
+            if pred_score is not None:
+                pred_scores.append(pred_score)
+                true_scores.append(example.score)
 
     pearson_score = pearsonr(pred_scores, true_scores)[0]
     spearman_score = spearmanr(pred_scores, true_scores)[0]
