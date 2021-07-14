@@ -41,15 +41,25 @@ def main(dataset_name='qags_xsum',
                     input_text=example[1].input_text,
                     context=example[1].context)
                 pred_score = align_y_x * align_y_r
+
+                all_preds.append({
+                    'context_0': example[0].context,
+                    'input_text_0': example[0].input_text,
+                    'context_1': example[1].context,
+                    'input_text_1': example[1].input_text,
+                    'align_y_x': align_y_x,
+                    'align_y_r': align_y_r,
+                    'pred_score': pred_score
+                })
         else:
             pred_score = aligner.get_score(
                 input_text=example.input_text, context=example.context)
 
-        all_preds.append({
-            'context': example.context,
-            'input_text': example.input_text,
-            'pred_score': pred_score
-        })
+            all_preds.append({
+                'context': example.context,
+                'input_text': example.input_text,
+                'pred_score': pred_score
+            })
 
         if pred_score is not None:
             pred_scores.append(pred_score)
