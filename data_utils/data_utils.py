@@ -171,8 +171,8 @@ def get_test_examples(dataset_name, aspect, dialog_context):
                         input_text=raw_example['summary'],
                         score=raw_example[aspect]),
                     TestExample(
-                        context=' '.join(raw_example['references']),
-                        input_text=raw_example['summary'],
+                        context=raw_example['summary'],
+                        input_text=' '.join(raw_example['references']),
                         score=raw_example[aspect])
                 ]
 

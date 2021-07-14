@@ -187,6 +187,9 @@ class DiscriminativeAligner(Aligner, LightningModule):
     def align(self, input_text, context):
         input_text, context = text_clean(input_text), text_clean(context)
 
+        input_text = self._roberta.decode(
+            self._roberta.encode(input_text)[:MAX_LENGTH // 2])
+
         word_logits = self(
             input_text=input_text,
             words=get_words(input_text),
