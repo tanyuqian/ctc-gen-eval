@@ -14,8 +14,10 @@ def main(dataset_name='qags_xsum',
          aspect='consistency',
          aligner_type='disc',
          disc_init=None,
+         bert_model_type='roberta-large',
+         bert_rescale_with_baseline=False,
          dialog_context='fact_history',
-         aggr_type='mean'):
+         aggr_type='mean',):
 
     if aligner_type == 'disc':
         aligner = DiscriminativeAligner.load_from_checkpoint(
@@ -23,7 +25,11 @@ def main(dataset_name='qags_xsum',
         aligner.eval()
     elif aligner_type == 'bert':
         aligner = BERTAligner(
-            aggr_type=aggr_type, lang='en', device='cuda')
+            model_type=bert_model_type,
+            rescale_with_baseline=bert_rescale_with_baseline,
+            aggr_type=aggr_type,
+            lang='en',
+            device='cuda')
 
     examples = get_test_examples(
         dataset_name=dataset_name, aspect=aspect, dialog_context=dialog_context)
