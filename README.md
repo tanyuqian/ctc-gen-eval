@@ -25,7 +25,7 @@ assert torch.all(torch.abs(output.sum(dim=0) - features.sum(dim=0)) < 1e-4)
 ```
 python construct.py --dataset_name xsum --task_type summ --target_size 10000
 python construct.py --dataset_name cnndm --task_type summ --target_size 10000
-python construct.py --dataset_name yelp --task_type transduction --target_size 100000
+python construct.py --dataset_name yelp --task_type transduction --target_size 10000
 python construct.py --dataset_name persona_chat --task_type dialog --target_size 100000
 python construct.py --dataset_name topical_chat --task_type dialog --target_size 100000
 ```
@@ -38,7 +38,7 @@ Constructed data will be saved in ```constructed_data/```.
 python finetune.py \
     --dataset_name [xsum/persona_chat/...] \
     --n_epochs [1 by default] \
-    --dialog_context [fact/history/fact_history/history_fact] (only effective for dialog datasets)
+    --dialog_context [fact/history/fact_history/history_fact]
 ```
 
 Checkpoints will be saved in ```ckpts/```.
@@ -53,7 +53,7 @@ python test_correlation.py \
     --disc_init [path_to_disc_ckpt] \
     --bert_model_type [roberta-large/bert-base-uncased] \
     [--bert_rescale_with_baseline] \ 
-    --dialog_context [fact/history/fact_history/history_fact] (only effective for dialog datasets) \
+    --dialog_context [fact/history/fact_history/history_fact] \
     --aggr_type [mean/sum]
 ```
 
