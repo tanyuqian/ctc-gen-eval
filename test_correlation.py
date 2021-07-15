@@ -47,19 +47,29 @@ def main(dataset_name='qags_xsum',
                     context=example[1].context)
                 pred_score = align_y_x * align_r_y
 
-                all_preds.append({
-                    'context_0': example[0].context,
-                    'input_text_0': example[0].input_text,
-                    'context_1': example[1].context,
-                    'input_text_1': example[1].input_text,
-                    'align_y_x': align_y_x,
-                    'align_r_y': align_r_y,
-                    'pred_score': pred_score
-                })
+            elif aspect == 'preservation':
+                align_y_x = aligner.get_score(
+                    input_text=example[0].input_text,
+                    context=example[0].context)
+                align_x_y = aligner.get_score(
+                    input_text=example[1].input_text,
+                    context=example[1].context)
+                pred_score = (align_y_x * align_x_y) / (align_y_x + align_x_y)
 
-                if pred_score is not None:
-                    pred_scores.append(pred_score)
-                    true_scores.append(example[0].score)
+            all_preds.append({
+                'context_0': example[0].context,
+                'input_text_0': example[0].input_text,
+                'context_1': example[1].context,
+                'input_text_1': example[1].input_text,
+                'pred_score': pred_score
+            })
+
+            if pred_score is not None:
+                pred_scores.append(pred_score)
+
+                assert example[0].score == example[1].score
+                true_scores.append(example[0].score)
+
         else:
             pred_score = aligner.get_score(
                 input_text=example.input_text, context=example.context)

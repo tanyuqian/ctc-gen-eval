@@ -153,9 +153,9 @@ def get_examples_for_discriminative_construction(dataset_name):
 
 
 def get_test_examples(dataset_name, aspect, dialog_context):
-    if dataset_name in ['qags_cnndm', 'qags_xsum', 'summeval']:
-        raw_examples = json.load(open(f'data/{dataset_name}.json'))
+    raw_examples = json.load(open(f'data/{dataset_name}.json'))
 
+    if dataset_name in ['qags_cnndm', 'qags_xsum', 'summeval']:
         examples = []
         for raw_example in raw_examples:
             if aspect == 'consistency':
@@ -179,7 +179,6 @@ def get_test_examples(dataset_name, aspect, dialog_context):
                 examples.append(example)
 
     elif dataset_name in ['persona_chat', 'topical_chat']:
-        raw_examples = json.load(open(f'data/{dataset_name}.json'))
         examples = []
         for raw_example in raw_examples:
             if dataset_name == 'topical_chat':
@@ -201,5 +200,22 @@ def get_test_examples(dataset_name, aspect, dialog_context):
                 context=context,
                 input_text=raw_example['response'],
                 score=raw_example[aspect]))
+
+    elif dataset_name in ['yelp']:
+        examples = []
+        for raw_example in raw_examples:
+            if aspect == 'preservation':
+                example = [
+                    TestExample(
+                        context=raw_example['input_sent'],
+                        input_text=raw_example['output_sent'],
+                        score=raw_example[aspect]),
+                    TestExample(
+                        context=raw_example['output_sent'],
+                        input_text=raw_example['input_sent'],
+                        score=raw_example[aspect])
+                ]
+
+                examples.append(example)
 
     return examples
