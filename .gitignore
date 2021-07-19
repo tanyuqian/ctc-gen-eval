@@ -3,3 +3,4 @@
 ./constructed_data
 ./eval_results
 ./lightning_logs
+*/__pycache__
