@@ -43,6 +43,20 @@ python finetune.py \
 
 Checkpoints will be saved in ```ckpts/```.
 
+### Download Constructed Data and Trained Models
+Constructed data and trained models can be downloaded via ```download_model_data.py```
+
+Usage:
+```
+python download_model_data.py \
+    --download_type [all/data/model] \
+    --cons_data [all/cnndm/xsum/yelp/persona_chat/topical_chat] \
+    --data_path (default:)constructed_data/ \
+    --model_name [all/cnndm/xsum/yelp/persona_chat/topical_chat] \
+    --model_path (default:)ckpts/ \
+    --context [fact/history/fact_history/history_fact] \
+```
+
 ## Test Correlation
 
 ```
