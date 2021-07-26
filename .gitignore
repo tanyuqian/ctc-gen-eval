@@ -3,4 +3,5 @@ ckpts/
 constructed_data/
 eval_results/
 lightning_logs/
+.idea/
 */__pycache__
