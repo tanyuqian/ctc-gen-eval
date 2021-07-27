@@ -1,0 +1,33 @@
+{
+    "name": "CTC Evaluation",
+    "description": "Evaluation pack for creation, transduction and compression",
+    "definitions": [
+        {
+            "entry_name": "ft.onto.ctc.metrics",
+            "parent_entry": "forte.data.ontology.top.Annotation",
+            "description": "Metrics of the generated text",
+            "attributes": [
+                {
+                    "name": "consistency",
+                    "type": "float"
+                },
+                {
+                    "name": "relevance",
+                    "type": "float"
+                },
+                {
+                    "name": "preservation",
+                    "type": "float"
+                },
+                {
+                    "name": "engagingness",
+                    "type": "float"
+                },
+                {
+                    "name": "groundedness",
+                    "type": "float"
+                }
+            ]
+        }
+    ]
+}
