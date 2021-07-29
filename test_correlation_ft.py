@@ -2,7 +2,7 @@ import fire
 from forte import Pipeline
 
 from data_utils.data_utils_forte import TestDatasetReader
-from models.ctc_processor import DiscModelProcessor, BertModelProcessor
+from models.ctc_processor import AlignModelProcessor
 
 from scipy.stats.stats import spearmanr, pearsonr, kendalltau
 
@@ -20,21 +20,15 @@ def main(dataset_name='qags_xsum',
 
     pl = Pipeline()
     pl.set_reader(TestDatasetReader())
-    if aligner_type == 'disc':
-        pl.add(DiscModelProcessor(ckpt_path=disc_init,
-                                  aggr_type=aggr_type,
-                                  device='cuda',
-                                  aspect=aspect))
-    elif aligner_type == 'bert':
-        pl.add(BertModelProcessor(model_type=bert_model_type,
-                                  rescale_with_baseline=bert_rescale_with_baseline,
-                                  aggr_type=aggr_type,
-                                  lang='en',
-                                  device='cuda',
-                                  aspect=aspect,
-                                  context=dialog_context))
-    else:
-        raise ValueError('Aligner type unknown: {}'.format(aligner_type))
+    pl.add(AlignModelProcessor(model_type=bert_model_type,
+                               rescale_with_baseline=bert_rescale_with_baseline,
+                               aggr_type=aggr_type,
+                               lang='en',
+                               device='cuda',
+                               aspect=aspect,
+                               context=dialog_context,
+                               ckpt_path=disc_init,
+                               aligner_type=aligner_type))
 
     pl.initialize()
 
@@ -45,13 +39,13 @@ def main(dataset_name='qags_xsum',
             ans_pack = pack.get_pack('output_sent')
         elif aspect in ['engagingness', 'groundness']:
             ans_pack = pack.get_pack('response')
-        generics = list(ans_pack.all_generic_entries)
+
         gen_dict = dict()
         for each_generic in ans_pack.all_generic_entries:
             gen_dict[each_generic.metric_name] = each_generic.metric_value
         # print(gen_dict)
-        if gen_dict['pred_'+aspect] is not None:
-            pred_scores.append(gen_dict['pred_'+aspect])
+        if gen_dict['pred_' + aspect] is not None:
+            pred_scores.append(gen_dict['pred_' + aspect])
             true_scores.append(gen_dict[aspect])
 
     pearson_score = pearsonr(pred_scores, true_scores)[0]

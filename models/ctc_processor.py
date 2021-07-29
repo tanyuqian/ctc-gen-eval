@@ -8,42 +8,47 @@ from .discriminative_aligner import DiscriminativeAligner
 from .bert_aligner import BERTAligner
 
 
-class DiscModelProcessor(MultiPackProcessor):
-    def __init__(self, ckpt_path: str, aggr_type: str, device: str, aspect: str):
-        super(DiscModelProcessor, self).__init__()
-        self.aligner = DiscriminativeAligner.load_from_checkpoint(
-            aggr_type=aggr_type, checkpoint_path=ckpt_path).to(device)
-        self.aligner.eval()
-        self.aspect = aspect
-        print('init success!')
-        # todo: checkpoint path
-
-    def _process(self, input_pack: MultiPack):
-        document_pack = input_pack.get_pack('document')
-        summary_pack = input_pack.get_pack('summary')
-
-        align_score_metric = Metric(summary_pack)
-        align_score_metric.metric_name = 'pred_consistency'
-        align_score_metric.metric_value = self.aligner.get_score(
-            input_text=summary_pack.text,
-            context=document_pack.text
-        )
-
-    def initialize(self, resources: Resources, configs: Config):
-        super().initialize(resources, configs)
+# class DiscModelProcessor(MultiPackProcessor):
+#     def __init__(self, ckpt_path: str, aggr_type: str, device: str, aspect: str):
+#         super(DiscModelProcessor, self).__init__()
+#         self.aligner = DiscriminativeAligner.load_from_checkpoint(
+#             aggr_type=aggr_type, checkpoint_path=ckpt_path).to(device)
+#         self.aligner.eval()
+#         self.aspect = aspect
+#
+#     def _process(self, input_pack: MultiPack):
+#         document_pack = input_pack.get_pack('document')
+#         summary_pack = input_pack.get_pack('summary')
+#
+#         align_score_metric = Metric(summary_pack)
+#         align_score_metric.metric_name = 'pred_consistency'
+#         align_score_metric.metric_value = self.aligner.get_score(
+#             input_text=summary_pack.text,
+#             context=document_pack.text
+#         )
+#
+#     def initialize(self, resources: Resources, configs: Config):
+#         super().initialize(resources, configs)
 
 
-class BertModelProcessor(MultiPackProcessor):
+class AlignModelProcessor(MultiPackProcessor):
     def __init__(self, model_type: str, rescale_with_baseline: bool,
-                 aggr_type: str, lang: str, device: str, aspect: str, context: str):
-        super(BertModelProcessor, self).__init__()
-        self.aligner = BERTAligner(
-            model_type=model_type,
-            rescale_with_baseline=rescale_with_baseline,
-            aggr_type=aggr_type,
-            lang=lang,
-            device=device
-        )
+                 aggr_type: str, lang: str, device: str, aspect: str, context: str, ckpt_path: str, aligner_type: str):
+        super(AlignModelProcessor, self).__init__()
+        if aligner_type == 'bert':
+            self.aligner = BERTAligner(
+                model_type=model_type,
+                rescale_with_baseline=rescale_with_baseline,
+                aggr_type=aggr_type,
+                lang=lang,
+                device=device
+            )
+        elif aligner_type == 'disc':
+            self.aligner = DiscriminativeAligner.load_from_checkpoint(
+                aggr_type=aggr_type, checkpoint_path=ckpt_path).to(device)
+            self.aligner.eval()
+        else:
+            raise ValueError('Aligner type: {} not recognized'.format(aligner_type))
         self.aspect = aspect
         self.context = context
         print('init success!')
