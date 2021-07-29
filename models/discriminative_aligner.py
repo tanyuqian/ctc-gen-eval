@@ -51,8 +51,8 @@ class DiscriminativeAligner(Aligner, LightningModule):
                 words=words,
                 features=features[:len_input_text])
         except:
-            print(f'Error bpe-to-words, '
-                  f'word_logits=None for this batch: {input_text}')
+            # print(f'Error bpe-to-words, '
+            #       f'word_logits=None for this batch: {input_text}')
             return None
 
         word_logits = self._classifier(word_features)
