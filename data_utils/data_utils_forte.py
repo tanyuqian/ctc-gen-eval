@@ -20,7 +20,6 @@ class TestDatasetReader(MultiPackReader):
         print(file_path)
         js_file = json.load((open(file_path)))
         dataset_name, extension = os.path.basename(file_path).split('.')
-        assert extension == 'json', 'Not a Json file!'
 
         for each_item in js_file:
             m_pack: MultiPack = MultiPack()  # each multi-pack represents an item in a json file

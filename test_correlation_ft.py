@@ -23,24 +23,36 @@ def main(dataset_name='qags_xsum',
     if aligner_type == 'disc':
         pl.add(DiscModelProcessor(ckpt_path=disc_init,
                                   aggr_type=aggr_type,
-                                  device='cuda'))
+                                  device='cuda',
+                                  aspect=aspect))
     elif aligner_type == 'bert':
         pl.add(BertModelProcessor(model_type=bert_model_type,
                                   rescale_with_baseline=bert_rescale_with_baseline,
                                   aggr_type=aggr_type,
                                   lang='en',
-                                  device='cuda'))
+                                  device='cuda',
+                                  aspect=aspect,
+                                  context=dialog_context))
     else:
         raise ValueError('Aligner type unknown: {}'.format(aligner_type))
 
     pl.initialize()
 
     for pack in pl.process_dataset(dataset_name):  # process whole dataset pack
-        summ_pack = pack.get_pack('summary')
-        generics = list(summ_pack.all_generic_entries)
-        if generics[1].metric_value is not None:
-            pred_scores.append(generics[1].metric_value)
-            true_scores.append(generics[0].metric_value)
+        if aspect in ['consistency', 'relevance']:
+            ans_pack = pack.get_pack('summary')
+        elif aspect in ['preservation']:
+            ans_pack = pack.get_pack('output_sent')
+        elif aspect in ['engagingness', 'groundness']:
+            ans_pack = pack.get_pack('response')
+        generics = list(ans_pack.all_generic_entries)
+        gen_dict = dict()
+        for each_generic in ans_pack.all_generic_entries:
+            gen_dict[each_generic.metric_name] = each_generic.metric_value
+        # print(gen_dict)
+        if gen_dict['pred_'+aspect] is not None:
+            pred_scores.append(gen_dict['pred_'+aspect])
+            true_scores.append(gen_dict[aspect])
 
     pearson_score = pearsonr(pred_scores, true_scores)[0]
     spearman_score = spearmanr(pred_scores, true_scores)[0]
