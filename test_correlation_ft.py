@@ -13,7 +13,7 @@ def main(dataset_name='qags_xsum',
          disc_init=None,
          bert_model_type='roberta-large',
          bert_rescale_with_baseline=False,
-         dialog_context='fact_history',
+         dialog_context=None,
          aggr_type='mean', ):
     pred_scores = []
     true_scores = []
@@ -28,7 +28,8 @@ def main(dataset_name='qags_xsum',
                                aspect=aspect,
                                context=dialog_context,
                                ckpt_path=disc_init,
-                               aligner_type=aligner_type))
+                               aligner_type=aligner_type,
+                               dataset_name=dataset_name))
 
     pl.initialize()
 
