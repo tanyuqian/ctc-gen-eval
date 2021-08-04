@@ -2,9 +2,7 @@ import fire
 from forte import Pipeline
 
 from data_utils.data_utils_forte import TestDatasetReader
-from models.ctc_processor import AlignModelProcessor
-
-from scipy.stats.stats import spearmanr, pearsonr, kendalltau
+from models.ctc_processor import AlignModelProcessor, CorrelationProcessor
 
 
 def main(dataset_name='qags_xsum',
@@ -15,8 +13,6 @@ def main(dataset_name='qags_xsum',
          bert_rescale_with_baseline=False,
          dialog_context=None,
          aggr_type='mean', ):
-    pred_scores = []
-    true_scores = []
 
     pl = Pipeline()
     pl.set_reader(TestDatasetReader())
@@ -30,33 +26,17 @@ def main(dataset_name='qags_xsum',
                                ckpt_path=disc_init,
                                aligner_type=aligner_type,
                                dataset_name=dataset_name))
+    pl.add(CorrelationProcessor(aspect=aspect))
 
     pl.initialize()
 
     for pack in pl.process_dataset(dataset_name):  # process whole dataset pack
-        if aspect in ['consistency', 'relevance']:
-            ans_pack = pack.get_pack('summary')
-        elif aspect in ['preservation']:
-            ans_pack = pack.get_pack('output_sent')
-        elif aspect in ['engagingness', 'groundness']:
-            ans_pack = pack.get_pack('response')
+        pass
 
-        gen_dict = dict()
-        for each_generic in ans_pack.all_generic_entries:
-            gen_dict[each_generic.metric_name] = each_generic.metric_value
-        # print(gen_dict)
-        if gen_dict['pred_' + aspect] is not None:
-            pred_scores.append(gen_dict['pred_' + aspect])
-            true_scores.append(gen_dict[aspect])
-
-    pearson_score = pearsonr(pred_scores, true_scores)[0]
-    spearman_score = spearmanr(pred_scores, true_scores)[0]
-    kendall_score = kendalltau(pred_scores, true_scores)[0]
-
-    print(f'#sents: {len(pred_scores)}')
-    print(f'pearson: {pearson_score:.4f}')
-    print(f'spearman: {spearman_score:.4f}')
-    print(f'kendall: {kendall_score:.4f}')
+    print(f'#sents: {len(pl.components[1].pred_scores)}')
+    print(f'pearson: {pl.components[1].pearson_score:.4f}')
+    print(f'spearman: {pl.components[1].spearman_score:.4f}')
+    print(f'kendall: {pl.components[1].kendall_score:.4f}')
 
 
 if __name__ == '__main__':

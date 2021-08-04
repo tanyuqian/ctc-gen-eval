@@ -1,4 +1,5 @@
 import os
+from abc import ABC
 
 from forte.common import Resources
 from forte.common.configuration import Config
@@ -10,28 +11,7 @@ from .discriminative_aligner import DiscriminativeAligner
 from .bert_aligner import BERTAligner
 from download_model_data import download_model
 
-
-# class DiscModelProcessor(MultiPackProcessor):
-#     def __init__(self, ckpt_path: str, aggr_type: str, device: str, aspect: str):
-#         super(DiscModelProcessor, self).__init__()
-#         self.aligner = DiscriminativeAligner.load_from_checkpoint(
-#             aggr_type=aggr_type, checkpoint_path=ckpt_path).to(device)
-#         self.aligner.eval()
-#         self.aspect = aspect
-#
-#     def _process(self, input_pack: MultiPack):
-#         document_pack = input_pack.get_pack('document')
-#         summary_pack = input_pack.get_pack('summary')
-#
-#         align_score_metric = Metric(summary_pack)
-#         align_score_metric.metric_name = 'pred_consistency'
-#         align_score_metric.metric_value = self.aligner.get_score(
-#             input_text=summary_pack.text,
-#             context=document_pack.text
-#         )
-#
-#     def initialize(self, resources: Resources, configs: Config):
-#         super().initialize(resources, configs)
+from scipy.stats.stats import spearmanr, pearsonr, kendalltau
 
 
 class AlignModelProcessor(MultiPackProcessor):
@@ -140,17 +120,6 @@ class AlignModelProcessor(MultiPackProcessor):
         his_fact_pack = input_pack.get_pack('history_fact')
         fact_pack = input_pack.get_pack('fact')
 
-        # if self.context == 'fact':
-        #     context_text = input_pack.get_pack('fact')
-        # elif self.context == 'history':
-        #     context_text = input_pack.get_pack('history')
-        # elif self.context == 'fact_history':
-        #     context_text = input_pack.get_pack('fact_history')
-        # elif self.context == 'history_fact':
-        #     context_text = input_pack.get_pack('history_fact')
-        # else:
-        #     raise ValueError('context: {} not recognized'.format(self.context))
-
         engagingness_metric = Metric(response_pack)
         engagingness_metric.metric_name = 'pred_engagingness'
         engagingness_metric.metric_value = self.aligner.get_score(input_text=response_pack.text,
@@ -160,3 +129,40 @@ class AlignModelProcessor(MultiPackProcessor):
         groundness_metric.metric_name = 'pred_groundness'
         groundness_metric.metric_value = self.aligner.get_score(input_text=response_pack.text,
                                                                 context=fact_pack.text)
+
+
+class CorrelationProcessor(MultiPackProcessor):
+    def __init__(self, aspect):
+        super(CorrelationProcessor, self).__init__()
+        self.aspect = aspect
+
+        self.pred_scores = []
+        self.true_scores = []
+
+        self.pearson_score = 0.0
+        self.spearman_score = 0.0
+        self.kendall_score = 0.0
+
+    def _process(self, pack: MultiPack):
+        if self.aspect in ['consistency', 'relevance']:
+            ans_pack = pack.get_pack('summary')
+        elif self.aspect in ['preservation']:
+            ans_pack = pack.get_pack('output_sent')
+        elif self.aspect in ['engagingness', 'groundness']:
+            ans_pack = pack.get_pack('response')
+
+        gen_dict = dict()
+        for each_generic in ans_pack.all_generic_entries:
+            gen_dict[each_generic.metric_name] = each_generic.metric_value
+        # print(gen_dict)
+        if gen_dict['pred_' + self.aspect] is not None:
+            self.pred_scores.append(gen_dict['pred_' + self.aspect])
+            self.true_scores.append(gen_dict[self.aspect])
+        try:
+            self.pearson_score = pearsonr(self.pred_scores, self.true_scores)[0]
+            self.spearman_score = spearmanr(self.pred_scores, self.true_scores)[0]
+            self.kendall_score = kendalltau(self.pred_scores, self.true_scores)[0]
+        except:
+            self.pearson_score = 0.0
+            self.spearman_score = 0.0
+            self.kendall_score = 0.0
