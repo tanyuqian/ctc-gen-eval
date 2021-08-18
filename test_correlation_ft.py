@@ -2,7 +2,7 @@ import fire
 from forte import Pipeline
 
 from data_utils.data_utils_forte import TestDatasetReader
-from models.ctc_processor import AlignModelProcessor, CorrelationProcessor
+from models.ctc_processor import AlignModelProcessor, CorrelationProcessor, BaseMetricProcessor
 
 
 def main(dataset_name='qags_xsum',
@@ -16,16 +16,17 @@ def main(dataset_name='qags_xsum',
 
     pl = Pipeline()
     pl.set_reader(TestDatasetReader())
-    pl.add(AlignModelProcessor(model_type=bert_model_type,
-                               rescale_with_baseline=bert_rescale_with_baseline,
-                               aggr_type=aggr_type,
-                               lang='en',
-                               device='cuda',
-                               aspect=aspect,
-                               context=dialog_context,
-                               ckpt_path=disc_init,
-                               aligner_type=aligner_type,
-                               dataset_name=dataset_name))
+    # pl.add(AlignModelProcessor(model_type=bert_model_type,
+    #                            rescale_with_baseline=bert_rescale_with_baseline,
+    #                            aggr_type=aggr_type,
+    #                            lang='en',
+    #                            device='cuda',
+    #                            aspect=aspect,
+    #                            context=dialog_context,
+    #                            ckpt_path=disc_init,
+    #                            aligner_type=aligner_type,
+    #                            dataset_name=dataset_name))
+    pl.add(BaseMetricProcessor())
     pl.add(CorrelationProcessor(aspect=aspect))
 
     pl.initialize()
