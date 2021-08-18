@@ -19,21 +19,29 @@ from datasets import load_metric
 class BaseMetricProcessor(MultiPackProcessor):
     f"""
     run baselines for ctc tasks.
+    bleurt relevance:
+    #sents: 1600
+    pearson: 0.3276
+    spearman: 0.3082
+    kendall: 0.2188
+
     """
 
     # todo: bleurt for different metrics
-    def __init__(self, metric_name="bleurt"):
+    def __init__(self, aspect: str, metric_name="bleurt"):
         super(BaseMetricProcessor, self).__init__()
+        self.aspect = aspect
         self.metric = load_metric(metric_name)
 
     def _process(self, input_pack: MultiPack):
         document_pack = input_pack.get_pack('document')
         summary_pack = input_pack.get_pack('summary')
+        reference_pack = input_pack.get_pack('references')
 
         bleurt_metric = Metric(summary_pack)
-        bleurt_metric.metric_name = 'pred_consistency'
+        bleurt_metric.metric_name = 'pred_' + self.aspect
         bleurt_metric.metric_value = self.metric.compute(predictions=[summary_pack.text],
-                                                         references=[document_pack.text])['scores'][0]
+                                                         references=[reference_pack.text])['scores'][0]
 
         # result = self.metric.compute(predictions=[summary_pack.text], references=[document_pack.text])
         # print(result)

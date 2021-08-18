@@ -26,7 +26,7 @@ def main(dataset_name='qags_xsum',
     #                            ckpt_path=disc_init,
     #                            aligner_type=aligner_type,
     #                            dataset_name=dataset_name))
-    pl.add(BaseMetricProcessor())
+    pl.add(BaseMetricProcessor(aspect=aspect))
     pl.add(CorrelationProcessor(aspect=aspect))
 
     pl.initialize()
