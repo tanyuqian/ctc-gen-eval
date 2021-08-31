@@ -105,9 +105,9 @@ Correlation scores will be printed in the running terminal, and evaluation score
 
 | Engagingness             | Pearson | Spearman | Kendall |
 |--------------------------|---------|----------|---------|
-| Ours (D) (XSUM)          |    0.4972     |    0.4988      |    0.3675     |
+| Ours (D)                 |    0.4972     |    0.4988      |    0.3675     |
 
 | Groundedness             | Pearson | Spearman | Kendall |
 |--------------------------|---------|----------|---------|
-| Ours (D) (XSUM)          |    0.3437     |    0.3467      |    0.2665     |
+| Ours (D)                 |    0.3437     |    0.3467      |    0.2665     |
 
