@@ -72,3 +72,42 @@ python test_correlation.py \
 ```
 
 Correlation scores will be printed in the running terminal, and evaluation scores for all examples will be saved in ```eval_results/```.
+
+
+## Results
+
+### SummEval
+
+| Consistency              | Pearson | Spearman | Kendall |
+|--------------------------|---------|----------|---------|
+| Ours (D) (CNN/DM)        |    0.5196     |    0.4208      |    0.3351     |
+| Ours (D) (XSUM)          |     0.5314    |   0.4273       |    0.3414     |
+
+| Relevance                | Pearson | Spearman | Kendall |
+|--------------------------|---------|----------|---------|
+| Ours (D) (CNN/DM)        |    0.2376     |     0.1292     |    0.0909     |
+| Ours (D) (XSUM)          |    0.2906     |     0.2142     |    0.1523     |
+
+### QAGS
+
+| Consistency (Pearson)                | CNN/DM | XSUM | 
+|--------------------------|---------|----------|
+| Ours (D) (CNN/DM)        |    0.6292     |    0.3093      |    
+| Ours (D) (XSUM)          |    0.6205     |    0.3222      |
+
+### Yelp
+
+| Preservation             | Pearson | Spearman | Kendall |
+|--------------------------|---------|----------|---------|
+| Ours (D)                 |    0.4974     |     0.4952     |    0.3579     |
+
+### TopicalChat
+
+| Engagingness             | Pearson | Spearman | Kendall |
+|--------------------------|---------|----------|---------|
+| Ours (D) (XSUM)          |    0.4972     |    0.4988      |    0.3675     |
+
+| Groundedness             | Pearson | Spearman | Kendall |
+|--------------------------|---------|----------|---------|
+| Ours (D) (XSUM)          |    0.3437     |    0.3467      |    0.2665     |
+

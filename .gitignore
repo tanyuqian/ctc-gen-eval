@@ -1,6 +1,0 @@
-## ignore checkpoints, constructed data.
-ckpts/
-constructed_data/
-eval_results/
-lightning_logs/
-*/__pycache__
