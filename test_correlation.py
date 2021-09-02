@@ -99,37 +99,5 @@ def main(dataset_name='qags_xsum',
     json.dump(all_preds, open(output_path, 'w'), indent=4)
 
 
-def explainaboard_output(dataset_name='qags_xsum',
-                         aspect='consistency',
-                         aligner_type='disc',
-                         disc_init=None,
-                         bert_model_type='roberta-large',
-                         bert_rescale_with_baseline=False,
-                         dialog_context='fact_history',
-                         aggr_type='mean'):
-    if aligner_type == 'disc':
-        aligner = DiscriminativeAligner.load_from_checkpoint(
-            aggr_type=aggr_type, checkpoint_path=disc_init).to('cuda')
-        aligner.eval()
-    elif aligner_type == 'bert':
-        aligner = BERTAligner(
-            model_type=bert_model_type,
-            rescale_with_baseline=bert_rescale_with_baseline,
-            aggr_type=aggr_type,
-            lang='en',
-            device='cuda')
-            
-    for example in tqdm(examples, desc='Testing'):
-        if isinstance(example, list):
-            if aspect == 'relevance':
-                align_y_x = aligner.get_score(
-                    input_text=example[0].input_text,
-                    context=example[0].context)
-                align_r_y = aligner.get_score(
-                    input_text=example[1].input_text,
-                    context=example[1].context)
-                pred_score = align_y_x * align_r_y
-
-
 if __name__ == '__main__':
     fire.Fire(main)

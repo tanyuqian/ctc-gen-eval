@@ -152,19 +152,6 @@ def get_examples_for_discriminative_construction(dataset_name):
 
     return examples
 
-def get_text_examples_explainaboard(dataset_name, aspect, dialog_context):
-    with open(f'data/Explainaboard/{dataset_name}.jsonl', 'r+', encoding='utf-8') as f:
-        for item in jsonlines.Reader(f):
-            if dataset_name in ['summeval']:
-                document = item['src']
-                references = ' '.join(item['ref_summs'])
-                for sys_summ_key in item['sys_summs'].keys():
-                    print(item['sys_summs'][sys_summ_key])
-                    break
-            break
-    
-
-
 
 def get_test_examples(dataset_name, aspect, dialog_context):
     raw_examples = json.load(open(f'data/{dataset_name}.json'))
@@ -234,6 +221,6 @@ def get_test_examples(dataset_name, aspect, dialog_context):
 
     return examples
 
+
 if __name__ == '__main__':
     get_text_examples_explainaboard('summeval', 'consistency', 'none')
-    
