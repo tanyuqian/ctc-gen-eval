@@ -17,7 +17,8 @@ def main(dataset_name='qags_xsum',
          bert_model_type='roberta-large',
          bert_rescale_with_baseline=False,
          dialog_context='fact_history',
-         aggr_type='mean',):
+         aggr_type='mean',
+         remove_stopwords=False):
 
     if aligner_type == 'disc':
         aligner = DiscriminativeAligner.load_from_checkpoint(
@@ -41,19 +42,23 @@ def main(dataset_name='qags_xsum',
             if aspect == 'relevance':
                 align_y_x = aligner.get_score(
                     input_text=example[0].input_text,
-                    context=example[0].context)
+                    context=example[0].context,
+                    remove_stopwords=remove_stopwords)
                 align_r_y = aligner.get_score(
                     input_text=example[1].input_text,
-                    context=example[1].context)
+                    context=example[1].context,
+                    remove_stopwords=remove_stopwords)
                 pred_score = align_y_x * align_r_y
 
             elif aspect == 'preservation':
                 align_y_x = aligner.get_score(
                     input_text=example[0].input_text,
-                    context=example[0].context)
+                    context=example[0].context,
+                    remove_stopwords=remove_stopwords)
                 align_x_y = aligner.get_score(
                     input_text=example[1].input_text,
-                    context=example[1].context)
+                    context=example[1].context,
+                    remove_stopwords=remove_stopwords)
                 pred_score = (align_y_x * align_x_y) / (align_y_x + align_x_y)
 
             all_preds.append({
@@ -72,7 +77,9 @@ def main(dataset_name='qags_xsum',
 
         else:
             pred_score = aligner.get_score(
-                input_text=example.input_text, context=example.context)
+                input_text=example.input_text,
+                context=example.context,
+                remove_stopwords=remove_stopwords)
 
             all_preds.append({
                 'context': example.context,
