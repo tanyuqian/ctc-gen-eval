@@ -15,7 +15,6 @@ def main(dataset_name='qags_xsum',
          aligner_type='disc',
          disc_init=None,
          bert_model_type='roberta-large',
-         bert_rescale_with_baseline=False,
          dialog_context='fact_history',
          aggr_type='mean',
          remove_stopwords=False):
@@ -27,7 +26,6 @@ def main(dataset_name='qags_xsum',
     elif aligner_type == 'bert':
         aligner = BERTAligner(
             model_type=bert_model_type,
-            rescale_with_baseline=bert_rescale_with_baseline,
             aggr_type=aggr_type,
             lang='en',
             device='cuda')
@@ -95,15 +93,20 @@ def main(dataset_name='qags_xsum',
     spearman_score = spearmanr(pred_scores, true_scores)[0]
     kendall_score = kendalltau(pred_scores, true_scores)[0]
 
+    os.makedirs(f'eval_results/{dataset_name}', exist_ok=True)
+    output_filename = f'{dataset_name}_{aspect}_{aligner_type}'
+    if aligner_type == 'bert':
+        output_filename += f'_{bert_model_type}'
+
+    output_path = f'eval_results/{output_filename}.json'
+    json.dump(all_preds, open(output_path, 'w'), indent=4)
+
+    print(output_filename)
     print(f'#sents: {len(pred_scores)}')
     print(f'pearson: {pearson_score:.4f}')
     print(f'spearman: {spearman_score:.4f}')
     print(f'kendall: {kendall_score:.4f}')
 
-    os.makedirs(f'eval_results/{dataset_name}', exist_ok=True)
-    output_path = \
-        f'eval_results/{dataset_name}/{aligner_type}_{aspect}_{aggr_type}.json'
-    json.dump(all_preds, open(output_path, 'w'), indent=4)
 
 
 if __name__ == '__main__':
