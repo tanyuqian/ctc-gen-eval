@@ -80,11 +80,15 @@ Correlation scores will be printed in the running terminal, and evaluation score
 
 | Consistency              | Pearson | Spearman | Kendall |
 |--------------------------|---------|----------|---------|
+| Ours (E) (BERT-base)     | 0.4359  |  0.3744  |  0.2974 |
+| Ours (E) (RoBERTa-large) |  0.3315     | 0.3202  |  0.2518  |   
 | Ours (D) (CNN/DM)        |  0.5240 |   0.4293 |  0.3422 |
 | Ours (D) (XSUM)          |     0.5314    |   0.4273       |    0.3414     |
 
 | Relevance                | Pearson | Spearman | Kendall |
 |--------------------------|---------|----------|---------|
+| Ours (E) (BERT-base)     |  0.3773 |  0.3437  | 0.2464  |
+| Ours (E) (RoBERTa-large)  |  0.5222    | 0.4992  |  0.3674  |  
 | Ours (D) (CNN/DM)        |  0.2828 |     0.2012     |  0.1433 |
 | Ours (D) (XSUM)          |    0.2906     |     0.2142     |    0.1523     |
 
@@ -92,6 +96,8 @@ Correlation scores will be printed in the running terminal, and evaluation score
 
 | Consistency (Pearson)                | CNN/DM | XSUM |
 |--------------------------|---------|----------|
+| Ours (E) (BERT-base)     | 0.6083  |  0.1436  | 
+| Ours (E) (RoBERTa-large) |  0.6091  |  0.0548 |    
 | Ours (D) (CNN/DM)        |  0.6188 | 0.3085 |
 | Ours (D) (XSUM)          |    0.6205     |    0.3222      |
 
@@ -99,24 +105,34 @@ Correlation scores will be printed in the running terminal, and evaluation score
 
 | Preservation             | Pearson | Spearman | Kendall |
 |--------------------------|---------|----------|---------|
+| Ours (E) (BERT-base)     |  0.5147 |  0.5168  |  0.3737 |
+| Ours (E) (RoBERTa-large) |   0.5142    | 0.5152  | 0.3753   | 
 | Ours (D)                 |    0.4974     |     0.4952     |    0.3579     |
 
-### TopicalChat
+### PersonaChat
 
 | Engagingness | Pearson | Spearman | Kendall |
 | ------------ | ------- | -------- | ------- |
+| Ours (E) (BERT-base)     |  0.5003 |   0.5490 | 0.4193  |
+| Ours (E) (RoBERTa-large)        |  0.4036 |  0.4437  |  0.3317 |
 | Ours (D)     |   0.5132      |    0.5688      |    0.4312     |
 
 | Groundedness | Pearson | Spearman | Kendall |
 | ------------ | ------- | -------- | ------- |
+| Ours (E) (BERT-base)     |  0.5761 |  0.5683  |  0.4492 |
+| Ours (E) (RoBERTa-large)        | 0.3713  |  0.3608  | 0.2826  |
 | Ours (D)     |    0.4733     |    0.4547      |    0.3564     |
 
 ### TopicalChat
 
 | Engagingness             | Pearson | Spearman | Kendall |
 |--------------------------|---------|----------|---------|
+| Ours (E) (BERT-base)     |  0.4514 |  0.4527  |  0.3296 |
+| Ours (E) (RoBERTa-large)        |  0.4512 |  0.4508  |  0.3306 |
 | Ours (D)                 |    0.4972     |    0.4988      |    0.3675     |
 
 | Groundedness             | Pearson | Spearman | Kendall |
 |--------------------------|---------|----------|---------|
+| Ours (E) (BERT-base)     | 0.3956  |  0.3705  | 0.2900  |
+| Ours (E) (RoBERTa-large)        |  0.3137 |   0.3142 | 0.2418  |
 | Ours (D)                 |    0.3437     |    0.3467      |    0.2665     |
