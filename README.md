@@ -80,19 +80,19 @@ Correlation scores will be printed in the running terminal, and evaluation score
 
 | Consistency              | Pearson | Spearman | Kendall |
 |--------------------------|---------|----------|---------|
-| Ours (D) (CNN/DM)        |    0.5196     |    0.4208      |    0.3351     |
+| Ours (D) (CNN/DM)        |  0.5240 |   0.4293 |  0.3422 |
 | Ours (D) (XSUM)          |     0.5314    |   0.4273       |    0.3414     |
 
 | Relevance                | Pearson | Spearman | Kendall |
 |--------------------------|---------|----------|---------|
-| Ours (D) (CNN/DM)        |    0.2376     |     0.1292     |    0.0909     |
+| Ours (D) (CNN/DM)        |  0.2828 |     0.2012     |  0.1433 |
 | Ours (D) (XSUM)          |    0.2906     |     0.2142     |    0.1523     |
 
 ### QAGS
 
-| Consistency (Pearson)                | CNN/DM | XSUM | 
+| Consistency (Pearson)                | CNN/DM | XSUM |
 |--------------------------|---------|----------|
-| Ours (D) (CNN/DM)        |    0.6292     |    0.3093      |    
+| Ours (D) (CNN/DM)        |  0.6188 | 0.3085 |
 | Ours (D) (XSUM)          |    0.6205     |    0.3222      |
 
 ### Yelp
@@ -103,6 +103,16 @@ Correlation scores will be printed in the running terminal, and evaluation score
 
 ### TopicalChat
 
+| Engagingness | Pearson | Spearman | Kendall |
+| ------------ | ------- | -------- | ------- |
+| Ours (D)     |   0.5132      |    0.5688      |    0.4312     |
+
+| Groundedness | Pearson | Spearman | Kendall |
+| ------------ | ------- | -------- | ------- |
+| Ours (D)     |    0.4733     |    0.4547      |    0.3564     |
+
+### TopicalChat
+
 | Engagingness             | Pearson | Spearman | Kendall |
 |--------------------------|---------|----------|---------|
 | Ours (D)                 |    0.4972     |    0.4988      |    0.3675     |
@@ -110,4 +120,3 @@ Correlation scores will be printed in the running terminal, and evaluation score
 | Groundedness             | Pearson | Spearman | Kendall |
 |--------------------------|---------|----------|---------|
 | Ours (D)                 |    0.3437     |    0.3467      |    0.2665     |
-

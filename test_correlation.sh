@@ -19,6 +19,11 @@ python test_correlation.py --dataset_name qags_xsum --aspect consistency --align
 
 python test_correlation.py --dataset_name yelp --aspect preservation --aligner_type disc --disc_init ckpts/yelp/disc.ckpt --aggr_type mean
 
+# PersonaChat
+
+python test_correlation.py --dataset_name persona_chat --aspect engaging --aligner_type disc --disc_init ckpts/persona_chat/disc_fact_history.ckpt --remove_stopwords --aggr_type sum --dialog_context fact_history
+python test_correlation.py --dataset_name persona_chat --aspect uses_knowledge --aligner_type disc --disc_init ckpts/persona_chat/disc_fact.ckpt --remove_stopwords --aggr_type sum --dialog_context fact
+
 # TopicalChat
 
 python test_correlation.py --dataset_name topical_chat --aspect engaging --aligner_type disc --disc_init ckpts/topical_chat/disc_fact_history.ckpt --aggr_type sum --dialog_context fact_history
