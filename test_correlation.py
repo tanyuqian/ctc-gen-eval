@@ -93,7 +93,7 @@ def main(dataset_name='qags_xsum',
     spearman_score = spearmanr(pred_scores, true_scores)[0]
     kendall_score = kendalltau(pred_scores, true_scores)[0]
 
-    os.makedirs(f'eval_results/{dataset_name}', exist_ok=True)
+    os.makedirs(f'eval_results/', exist_ok=True)
     output_filename = f'{dataset_name}_{aspect}_{aligner_type}'
     if aligner_type == 'bert':
         output_filename += f'_{bert_model_type}'
@@ -106,7 +106,6 @@ def main(dataset_name='qags_xsum',
     print(f'pearson: {pearson_score:.4f}')
     print(f'spearman: {spearman_score:.4f}')
     print(f'kendall: {kendall_score:.4f}')
-
 
 
 if __name__ == '__main__':
