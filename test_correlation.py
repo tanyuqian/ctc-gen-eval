@@ -15,6 +15,7 @@ def main(dataset_name='qags_xsum',
          aligner_type='disc',
          disc_init=None,
          bert_model_type='roberta-large',
+         bert_num_layers=None,
          dialog_context='fact_history',
          aggr_type='mean',
          remove_stopwords=False):
@@ -26,6 +27,7 @@ def main(dataset_name='qags_xsum',
     elif aligner_type == 'bert':
         aligner = BERTAligner(
             model_type=bert_model_type,
+            num_layers=bert_num_layers,
             aggr_type=aggr_type,
             lang='en',
             device='cuda')
