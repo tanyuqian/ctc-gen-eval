@@ -28,6 +28,7 @@ python test_correlation.py --dataset_name qags_xsum --aspect consistency --align
 
 python test_correlation.py --dataset_name yelp --aspect preservation --aligner_type bert --bert_model_type bert-base-uncased --aggr_type mean
 python test_correlation.py --dataset_name yelp --aspect preservation --aligner_type bert --aggr_type mean
+python test_correlation.py --dataset_name yelp --aspect preservation --aligner_type bert --bert_model_type roberta-large-mnli --bert_num_layers 9 --aggr_type mean
 python test_correlation.py --dataset_name yelp --aspect preservation --aligner_type disc --disc_init ckpts/yelp/disc.ckpt --aggr_type mean
 
 # PersonaChat
