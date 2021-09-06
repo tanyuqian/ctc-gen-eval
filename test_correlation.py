@@ -18,7 +18,8 @@ def main(dataset_name='qags_xsum',
          bert_num_layers=None,
          dialog_context='fact_history',
          aggr_type='mean',
-         remove_stopwords=False):
+         remove_stopwords=False,
+         n_references=11):
 
     if aligner_type == 'disc':
         aligner = DiscriminativeAligner.load_from_checkpoint(
@@ -33,7 +34,10 @@ def main(dataset_name='qags_xsum',
             device='cuda')
 
     examples = get_test_examples(
-        dataset_name=dataset_name, aspect=aspect, dialog_context=dialog_context)
+        dataset_name=dataset_name, 
+        aspect=aspect, 
+        dialog_context=dialog_context,
+        n_references=n_references)
 
     all_preds = []
     pred_scores, true_scores = [], []

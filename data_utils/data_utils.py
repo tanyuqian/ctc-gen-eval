@@ -12,7 +12,7 @@ TokenClassificationExample = namedtuple('TokenClassificationExample', [
     'context', 'input_text', 'labels'])
 
 
-TestExample = namedtuple('TestExample', ['input_text', 'context', 'score'])
+TestExample = namedtuple('TestExample', ['system', 'input_text', 'context', 'score'])
 
 
 def get_dataloaders(dataset, batch_size, num_workers, shuffle, collate_fn):
@@ -152,14 +152,15 @@ def get_examples_for_discriminative_construction(dataset_name):
     return examples
 
 
-def get_test_examples(dataset_name, aspect, dialog_context):
-    raw_examples = json.load(open(f'data/{dataset_name}.json'))
+def get_test_examples(dataset_name, aspect, dialog_context, n_references):
+    raw_examples = json.load(open(f'data_new/{dataset_name}.json'))
 
     if dataset_name in ['qags_cnndm', 'qags_xsum', 'summeval']:
         examples = []
         for raw_example in raw_examples:
             if aspect == 'consistency':
                 examples.append(TestExample(
+                    system=raw_example['system'],
                     context=raw_example['document'],
                     input_text=raw_example['summary'],
                     score=raw_example[aspect]))
@@ -167,12 +168,14 @@ def get_test_examples(dataset_name, aspect, dialog_context):
             elif aspect == 'relevance':
                 example = [
                     TestExample(
+                        system=raw_example['system'],
                         context=raw_example['document'],
                         input_text=raw_example['summary'],
                         score=raw_example[aspect]),
                     TestExample(
+                        system=raw_example['system'],
                         context=raw_example['summary'],
-                        input_text=' '.join(raw_example['references']),
+                        input_text=' '.join(raw_example['references'][:n_references]),
                         score=raw_example[aspect])
                 ]
 
@@ -197,6 +200,7 @@ def get_test_examples(dataset_name, aspect, dialog_context):
                 context = '\n\n\n'.join([history.strip(), fact.strip()])
 
             examples.append(TestExample(
+                system=raw_example['model'],
                 context=context,
                 input_text=raw_example['response'],
                 score=raw_example[aspect]))
@@ -207,10 +211,12 @@ def get_test_examples(dataset_name, aspect, dialog_context):
             if aspect == 'preservation':
                 example = [
                     TestExample(
+                        system=raw_example['model'],
                         context=raw_example['input_sent'],
                         input_text=raw_example['output_sent'],
                         score=raw_example[aspect]),
                     TestExample(
+                        system=raw_example['model'],
                         context=raw_example['output_sent'],
                         input_text=raw_example['input_sent'],
                         score=raw_example[aspect])
