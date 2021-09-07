@@ -10,7 +10,7 @@ from fairseq.models.roberta import alignment_utils
 
 from models.aligner import Aligner
 
-from transformers import AdamW, get_linear_schedule_with_warmup
+from transformers import AdamW, get_linear_schedule_with_warmup, AutoTokenizer
 
 from sklearn.metrics import f1_score
 
@@ -36,10 +36,15 @@ class DiscriminativeAligner(Aligner, LightningModule):
         self._roberta = RobertaModel.from_pretrained(f'{cache_dir}/{INIT}')
         self._classifier = nn.Linear(
             self._roberta.model.args.encoder_embed_dim, 2)
+        self._tokenizer = AutoTokenizer.from_pretrained("roberta-large")
 
         self._hparams = None
 
     def forward(self, input_text, words, context):
+        if len(self._tokenizer(input_text)['input_ids']) > MAX_LENGTH: 
+            print('Length of input text exceeds max length! Skipping')
+            return None
+        
         tokens = self._roberta.encode(
             input_text, context)[:MAX_LENGTH].unsqueeze(0)
         features = self._roberta.extract_features(tokens=tokens)[0]

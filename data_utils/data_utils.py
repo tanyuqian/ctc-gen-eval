@@ -78,11 +78,15 @@ def get_context(constructed_doc, dataset_name, dialog_context):
         context = constructed_doc['src']
     elif dataset_name in ['yelp']:
         context = constructed_doc['text']
-    elif dataset_name in ['persona_chat', 'topical_chat']:
+    elif dataset_name in ['persona_chat', 'topical_chat',
+                          'persona_chat_fact', 'topical_chat_fact',]:
         if dataset_name == 'persona_chat':
             fact = '\n'.join([f'your persona: {t}'
                               for t in sent_tokenize(constructed_doc['fact'])])
             history = constructed_doc['history'].replace('<|endoftext|>', '\n')
+        elif dataset_name == 'persona_chat_fact': 
+            fact = '\n'.join([f'your persona: {t}'
+                              for t in sent_tokenize(constructed_doc['fact'])])
         elif dataset_name == 'topical_chat':
             if constructed_doc['fact'] == '':
                 fact = 'nofact\n'
@@ -90,6 +94,12 @@ def get_context(constructed_doc, dataset_name, dialog_context):
                 fact = '\n'.join([
                     f'fact: {t}' for t in constructed_doc['fact'].split('\n')])
             history = constructed_doc['history']
+        elif dataset_name == 'topical_chat_fact':
+            if constructed_doc['fact'] == '':
+                fact = 'nofact\n'
+            else:
+                fact = '\n'.join([
+                    f'fact: {t}' for t in constructed_doc['fact'].split('\n')])
 
         if dialog_context == 'fact_history':
             context = '\n\n\n'.join([fact.strip(), history.strip()])

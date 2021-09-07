@@ -12,6 +12,9 @@ class Aligner:
         raise NotImplementedError
 
     def aggregate(self, tokens, token_scores, remove_stopwords):
+        if self._aggr_type is None: 
+            return token_scores[0]
+        
         assert len(tokens) == len(token_scores)
 
         scores_to_aggr = []

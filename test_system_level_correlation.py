@@ -8,8 +8,8 @@ from models.discriminative_aligner import DiscriminativeAligner
 from models.bert_aligner import BERTAligner
 from models.bleurt_aligner import BLEURTAligner
 
+import pandas as pd
 from scipy.stats.stats import spearmanr, pearsonr, kendalltau
-
 
 def main(dataset_name='qags_xsum',
          aspect='consistency',
@@ -44,7 +44,7 @@ def main(dataset_name='qags_xsum',
         aspect=aspect, 
         dialog_context=dialog_context,
         n_references=n_references)
-
+    
     all_preds = []
     pred_scores, true_scores = [], []
     for example in tqdm(examples, desc='Testing'):
@@ -72,6 +72,7 @@ def main(dataset_name='qags_xsum',
                 pred_score = (align_y_x * align_x_y) / (align_y_x + align_x_y)
 
             all_preds.append({
+                'system': example[0].system,
                 'context_0': example[0].context,
                 'input_text_0': example[0].input_text,
                 'context_1': example[1].context,
@@ -92,6 +93,7 @@ def main(dataset_name='qags_xsum',
                 remove_stopwords=remove_stopwords)
 
             all_preds.append({
+                'system': example.system,
                 'context': example.context,
                 'input_text': example.input_text,
                 'pred_score': pred_score
@@ -100,7 +102,14 @@ def main(dataset_name='qags_xsum',
             if pred_score is not None:
                 pred_scores.append(pred_score)
                 true_scores.append(example.score)
-
+    
+    df_preds = pd.DataFrame(all_preds)
+    df_preds['true_score'] = true_scores
+    df_system_preds = df_preds.groupby('system')[['pred_score', 'true_score']].mean()
+    print(df_system_preds)
+    pred_scores = df_system_preds['pred_score']
+    true_scores = df_system_preds['true_score']
+    
     pearson_score = pearsonr(pred_scores, true_scores)[0]
     spearman_score = spearmanr(pred_scores, true_scores)[0]
     kendall_score = kendalltau(pred_scores, true_scores)[0]
@@ -115,10 +124,11 @@ def main(dataset_name='qags_xsum',
 
     print(output_filename)
     print(f'#sents: {len(pred_scores)}')
+    print(f'#systems: {len(df_system_preds)}')
     print(f'pearson: {pearson_score:.4f}')
     print(f'spearman: {spearman_score:.4f}')
     print(f'kendall: {kendall_score:.4f}')
-
+    
 
 if __name__ == '__main__':
     fire.Fire(main)
