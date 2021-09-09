@@ -166,7 +166,7 @@ def get_examples_for_discriminative_construction(dataset_name):
 
 
 def get_test_examples(dataset_name, aspect, dialog_context, n_references):
-    raw_examples = json.load(open(f'data_new/{dataset_name}.json'))
+    raw_examples = json.load(open(f'data/{dataset_name}.json'))
 
     if dataset_name in ['qags_cnndm', 'qags_xsum', 'summeval']:
         examples = []
