@@ -13,20 +13,36 @@ class ConstructedDiscriminativeDataset(Dataset):
 
         for file_path in glob(f'constructed_data/{dataset_name}/*.json'):
             for doc in json.load(open(file_path)):
-                input_text, labels = get_discriminative_token_labels(
-                    template=doc['template'],
-                    answers=doc['answers'],
-                    fillings=doc['fillings'])
+                if dataset_name == "cnndm_ref": 
+                    input_text, labels = get_discriminative_token_labels(
+                        template=doc['template'], 
+                        answers=doc['answers'],
+                        fillings=doc['fillings'])
+                    
+                    context = text_clean(get_context(
+                        constructed_doc=doc,
+                        dataset_name=dataset_name,
+                        dialog_context=dialog_context))
+                    
+                    input_text = text_clean(input_text)
+                    
+                    self._examples.append(TokenClassificationExample(
+                        context=context, input_text=input_text, labels=labels))
+                else:
+                    input_text, labels = get_discriminative_token_labels(
+                        template=doc['template'],
+                        answers=doc['answers'],
+                        fillings=doc['fillings'])
 
-                context = text_clean(get_context(
-                    constructed_doc=doc,
-                    dataset_name=dataset_name,
-                    dialog_context=dialog_context))
+                    context = text_clean(get_context(
+                        constructed_doc=doc,
+                        dataset_name=dataset_name,
+                        dialog_context=dialog_context))
 
-                input_text = text_clean(input_text)
+                    input_text = text_clean(input_text)
 
-                self._examples.append(TokenClassificationExample(
-                    context=context, input_text=input_text, labels=labels))
+                    self._examples.append(TokenClassificationExample(
+                        context=context, input_text=input_text, labels=labels))
 
         cut = int(0.9 * len(self._examples))
         self._examples = self._examples[:cut] if split == 'train' \

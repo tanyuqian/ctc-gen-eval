@@ -11,19 +11,19 @@ python test_system_level_correlation.py --dataset_name summeval --aspect consist
 
 python test_system_level_correlation.py --dataset_name summeval --aspect relevance --aligner_type bert --bert_model_type bert-base-uncased --aggr_type mean
 python test_system_level_correlation.py --dataset_name summeval --aspect relevance --aligner_type bert --aggr_type mean
-python test_system_level_correlation.py --dataset_name summeval --aspect relevance --aligner_type disc --disc_init ckpts/cnndm/disc-Aug30.ckpt --aggr_type mean
-python test_system_level_correlation.py --dataset_name summeval --aspect relevance --aligner_type disc --disc_init ckpts/xsum/disc-Aug30.ckpt --aggr_type mean
-python test_system_level_correlation.py --dataset_name summeval --aspect relevance --aligner_type bleurt --bleurt_init /jupyter/runs/bleurt-base-cnndm-consistency-10000/export/bleurt_best/1630610653/
-python test_system_level_correlation.py --dataset_name summeval --aspect relevance --aligner_type bleurt --bleurt_init /jupyter/runs/bleurt-base-xsum-consistency-10000/export/bleurt_best/1630611620/
+python test_system_level_correlation.py --dataset_name summeval --aspect relevance --aligner_type disc --disc_init ckpts/cnndm_ref/disc.ckpt --relevance_y_x_init ckpts/cnndm/disc-Aug30.ckpt --aggr_type mean
+python test_system_level_correlation.py --dataset_name summeval --aspect relevance --aligner_type disc --disc_init ckpts/cnndm_ref/disc.ckpt --relevance_y_x_init ckpts/xsum/disc-Aug30.ckpt --aggr_type mean
+python test_system_level_correlation.py --dataset_name summeval --aspect relevance --aligner_type bleurt --bleurt_init /jupyter/runs/bleurt-base-cnndm-ref-reversed-mean-ref-10000/export/bleurt_best/1631043141/ --relevance_y_x_init /jupyter/runs/bleurt-base-cnndm-consistency-10000/export/bleurt_best/1630610653/
+python test_system_level_correlation.py --dataset_name summeval --aspect relevance --aligner_type bleurt --bleurt_init /jupyter/runs/bleurt-base-cnndm-ref-reversed-mean-ref-10000/export/bleurt_best/1631043141/ --relevance_y_x_init /jupyter/runs/bleurt-base-xsum-consistency-10000/export/bleurt_best/1630611620/
 
 # SummEval - Relevance - 1 References
 
 python test_system_level_correlation.py --dataset_name summeval --aspect relevance --aligner_type bert --bert_model_type bert-base-uncased --aggr_type mean --n_references 1
 python test_system_level_correlation.py --dataset_name summeval --aspect relevance --aligner_type bert --aggr_type mean --n_references 1
-python test_system_level_correlation.py --dataset_name summeval --aspect relevance --aligner_type disc --disc_init ckpts/cnndm/disc-Aug30.ckpt --aggr_type mean --n_references 1
-python test_system_level_correlation.py --dataset_name summeval --aspect relevance --aligner_type disc --disc_init ckpts/xsum/disc-Aug30.ckpt --aggr_type mean --n_references 1
-python test_system_level_correlation.py --dataset_name summeval --aspect relevance --aligner_type bleurt --bleurt_init /jupyter/runs/bleurt-base-cnndm-consistency-10000/export/bleurt_best/1630610653/ --n_references 1
-python test_system_level_correlation.py --dataset_name summeval --aspect relevance --aligner_type bleurt --bleurt_init /jupyter/runs/bleurt-base-xsum-consistency-10000/export/bleurt_best/1630611620/ --n_references 1
+python test_system_level_correlation.py --dataset_name summeval --aspect relevance --aligner_type disc --disc_init ckpts/cnndm_ref/disc.ckpt --relevance_y_x_init ckpts/cnndm/disc-Aug30.ckpt --aggr_type mean --n_references 1
+python test_system_level_correlation.py --dataset_name summeval --aspect relevance --aligner_type disc --disc_init ckpts/cnndm_ref/disc.ckpt --relevance_y_x_init ckpts/xsum/disc-Aug30.ckpt --aggr_type mean --n_references 1
+python test_system_level_correlation.py --dataset_name summeval --aspect relevance --aligner_type bleurt --bleurt_init /jupyter/runs/bleurt-base-cnndm-ref-reversed-mean-ref-10000/export/bleurt_best/1631043141/ --relevance_y_x_init /jupyter/runs/bleurt-base-cnndm-consistency-10000/export/bleurt_best/1630610653/ --n_references 1
+python test_system_level_correlation.py --dataset_name summeval --aspect relevance --aligner_type bleurt --bleurt_init /jupyter/runs/bleurt-base-cnndm-ref-reversed-mean-ref-10000/export/bleurt_best/1631043141/ --relevance_y_x_init /jupyter/runs/bleurt-base-xsum-consistency-10000/export/bleurt_best/1630611620/ --n_references 1
 
 # Yelp
 

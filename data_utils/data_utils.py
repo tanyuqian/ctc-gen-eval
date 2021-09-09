@@ -76,6 +76,9 @@ def get_discriminative_token_labels(template, answers, fillings):
 def get_context(constructed_doc, dataset_name, dialog_context):
     if dataset_name in ['xsum', 'cnndm']:
         context = constructed_doc['src']
+    elif dataset_name in ['cnndm_ref']:
+        # context = constructed_doc['ref']
+        context = constructed_doc['para_tgt']
     elif dataset_name in ['yelp']:
         context = constructed_doc['text']
     elif dataset_name in ['persona_chat', 'topical_chat',
@@ -185,7 +188,7 @@ def get_test_examples(dataset_name, aspect, dialog_context, n_references):
                     TestExample(
                         system=raw_example['system'],
                         context=raw_example['summary'],
-                        input_text=' '.join(raw_example['references'][:n_references]),
+                        input_text=raw_example['references'][:n_references],
                         score=raw_example[aspect])
                 ]
 
