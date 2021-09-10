@@ -12,7 +12,7 @@ TokenClassificationExample = namedtuple('TokenClassificationExample', [
     'context', 'input_text', 'labels'])
 
 
-TestExample = namedtuple('TestExample', ['input_text', 'context', 'score'])
+TestExample = namedtuple('TestExample', ['system', 'input_text', 'context', 'score'])
 
 
 def get_dataloaders(dataset, batch_size, num_workers, shuffle, collate_fn):
@@ -76,13 +76,19 @@ def get_discriminative_token_labels(template, answers, fillings):
 def get_context(constructed_doc, dataset_name, dialog_context):
     if dataset_name in ['xsum', 'cnndm']:
         context = constructed_doc['src']
+    elif dataset_name in ['cnndm_ref']:
+        context = constructed_doc['ref']
     elif dataset_name in ['yelp']:
         context = constructed_doc['text']
-    elif dataset_name in ['persona_chat', 'topical_chat']:
+    elif dataset_name in ['persona_chat', 'topical_chat',
+                          'persona_chat_fact', 'topical_chat_fact',]:
         if dataset_name == 'persona_chat':
             fact = '\n'.join([f'your persona: {t}'
                               for t in sent_tokenize(constructed_doc['fact'])])
             history = constructed_doc['history'].replace('<|endoftext|>', '\n')
+        elif dataset_name == 'persona_chat_fact': 
+            fact = '\n'.join([f'your persona: {t}'
+                              for t in sent_tokenize(constructed_doc['fact'])])
         elif dataset_name == 'topical_chat':
             if constructed_doc['fact'] == '':
                 fact = 'nofact\n'
@@ -90,6 +96,12 @@ def get_context(constructed_doc, dataset_name, dialog_context):
                 fact = '\n'.join([
                     f'fact: {t}' for t in constructed_doc['fact'].split('\n')])
             history = constructed_doc['history']
+        elif dataset_name == 'topical_chat_fact':
+            if constructed_doc['fact'] == '':
+                fact = 'nofact\n'
+            else:
+                fact = '\n'.join([
+                    f'fact: {t}' for t in constructed_doc['fact'].split('\n')])
 
         if dialog_context == 'fact_history':
             context = '\n\n\n'.join([fact.strip(), history.strip()])
@@ -115,7 +127,7 @@ def get_examples_for_discriminative_construction(dataset_name):
                 'src': text_clean(d['document']),
                 'ref': text_clean(d['summary'])
             })
-    elif dataset_name == 'cnndm':
+    elif dataset_name == 'cnndm' or dataset_name == 'cnndm_ref':
         for d in load_dataset('cnn_dailymail', '3.0.0')['train']:
             examples.append({
                 'idx': len(examples),
@@ -132,7 +144,7 @@ def get_examples_for_discriminative_construction(dataset_name):
                     'text': text_clean(line.strip())
                 })
         random.shuffle(examples)
-    elif dataset_name == 'persona_chat':
+    elif dataset_name == 'persona_chat' or dataset_name == 'persona_chat_fact':
         for d in load_dataset("bavard/personachat_truecased")['train']:
             examples.append({
                 'idx': len(examples),
@@ -140,7 +152,7 @@ def get_examples_for_discriminative_construction(dataset_name):
                 'fact': text_clean('\n'.join(d['personality'])),
                 'ref': text_clean(d['candidates'][-1])
             })
-    elif dataset_name == 'topical_chat':
+    elif dataset_name == 'topical_chat' or dataset_name == 'topical_chat_fact':
         for d in json.load(open('data/topical_chat/dialogs.json')):
             examples.append({
                 'idx': len(examples),
@@ -152,7 +164,7 @@ def get_examples_for_discriminative_construction(dataset_name):
     return examples
 
 
-def get_test_examples(dataset_name, aspect, dialog_context):
+def get_test_examples(dataset_name, aspect, dialog_context, n_references):
     raw_examples = json.load(open(f'data/{dataset_name}.json'))
 
     if dataset_name in ['qags_cnndm', 'qags_xsum', 'summeval']:
@@ -160,6 +172,7 @@ def get_test_examples(dataset_name, aspect, dialog_context):
         for raw_example in raw_examples:
             if aspect == 'consistency':
                 examples.append(TestExample(
+                    system=raw_example['system'],
                     context=raw_example['document'],
                     input_text=raw_example['summary'],
                     score=raw_example[aspect]))
@@ -167,12 +180,14 @@ def get_test_examples(dataset_name, aspect, dialog_context):
             elif aspect == 'relevance':
                 example = [
                     TestExample(
+                        system=raw_example['system'],
                         context=raw_example['document'],
                         input_text=raw_example['summary'],
                         score=raw_example[aspect]),
                     TestExample(
+                        system=raw_example['system'],
                         context=raw_example['summary'],
-                        input_text=' '.join(raw_example['references']),
+                        input_text=raw_example['references'][:n_references],
                         score=raw_example[aspect])
                 ]
 
@@ -197,6 +212,7 @@ def get_test_examples(dataset_name, aspect, dialog_context):
                 context = '\n\n\n'.join([history.strip(), fact.strip()])
 
             examples.append(TestExample(
+                system=raw_example['model'],
                 context=context,
                 input_text=raw_example['response'],
                 score=raw_example[aspect]))
@@ -207,10 +223,12 @@ def get_test_examples(dataset_name, aspect, dialog_context):
             if aspect == 'preservation':
                 example = [
                     TestExample(
+                        system=raw_example['model'],
                         context=raw_example['input_sent'],
                         input_text=raw_example['output_sent'],
                         score=raw_example[aspect]),
                     TestExample(
+                        system=raw_example['model'],
                         context=raw_example['output_sent'],
                         input_text=raw_example['input_sent'],
                         score=raw_example[aspect])
