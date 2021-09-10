@@ -119,11 +119,11 @@ def construct_dialog_fact(example,
                           dataset):
     if example['fact'] == '': return None
     
-    assert dataset in ['persona_chat', 'topical_chat']
-    if dataset == 'persona_chat': 
+    assert dataset in ['persona_chat_fact', 'topical_chat_fact']
+    if dataset == 'persona_chat_fact': 
         n_fact_sents = np.random.randint(1, 4)
         example_fact_sents = sent_tokenize(example['fact'])
-    elif dataset == 'topical_chat': 
+    elif dataset == 'topical_chat_fact': 
         n_fact_sents = 1
         example_fact_sents = example['fact'].split('\n')
     
@@ -131,12 +131,12 @@ def construct_dialog_fact(example,
     sent_idx.sort()
     selected_fact_sents = [example_fact_sents[idx] for idx in sent_idx]
     
-    if dataset == 'persona_chat': 
+    if dataset == 'persona_chat_fact': 
         para_selected_fact_sents = []
         for sent in selected_fact_sents: 
             para_tgt = para_generator.generate(input_text=sent)
             if para_tgt is not None: para_selected_fact_sents.append(para_tgt)
-    elif dataset == 'topical_chat': 
+    elif dataset == 'topical_chat_fact': 
         para_selected_fact_sents = selected_fact_sents
     
     if len(para_selected_fact_sents) == 0: return None
@@ -209,7 +209,8 @@ def main(dataset_name, task_type, target_size=10000, device='cuda'):
             example=example,
             task_type=task_type,
             para_generator=para_generator,
-            hallu_generator=hallu_generator)
+            hallu_generator=hallu_generator,
+            dataset=dataset_name)
         
         # print(constructed_example)
         

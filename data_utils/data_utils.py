@@ -77,8 +77,7 @@ def get_context(constructed_doc, dataset_name, dialog_context):
     if dataset_name in ['xsum', 'cnndm']:
         context = constructed_doc['src']
     elif dataset_name in ['cnndm_ref']:
-        # context = constructed_doc['ref']
-        context = constructed_doc['para_tgt']
+        context = constructed_doc['ref']
     elif dataset_name in ['yelp']:
         context = constructed_doc['text']
     elif dataset_name in ['persona_chat', 'topical_chat',
@@ -128,7 +127,7 @@ def get_examples_for_discriminative_construction(dataset_name):
                 'src': text_clean(d['document']),
                 'ref': text_clean(d['summary'])
             })
-    elif dataset_name == 'cnndm':
+    elif dataset_name == 'cnndm' or dataset_name == 'cnndm_ref':
         for d in load_dataset('cnn_dailymail', '3.0.0')['train']:
             examples.append({
                 'idx': len(examples),
@@ -145,7 +144,7 @@ def get_examples_for_discriminative_construction(dataset_name):
                     'text': text_clean(line.strip())
                 })
         random.shuffle(examples)
-    elif dataset_name == 'persona_chat':
+    elif dataset_name == 'persona_chat' or dataset_name == 'persona_chat_fact':
         for d in load_dataset("bavard/personachat_truecased")['train']:
             examples.append({
                 'idx': len(examples),
@@ -153,7 +152,7 @@ def get_examples_for_discriminative_construction(dataset_name):
                 'fact': text_clean('\n'.join(d['personality'])),
                 'ref': text_clean(d['candidates'][-1])
             })
-    elif dataset_name == 'topical_chat':
+    elif dataset_name == 'topical_chat' or dataset_name == 'topical_chat_fact':
         for d in json.load(open('data/topical_chat/dialogs.json')):
             examples.append({
                 'idx': len(examples),
