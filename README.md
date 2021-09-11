@@ -2,7 +2,7 @@
 
 This repo contains preliminary code of the following paper: \
 **Compression, Transduction, and Creation: A Unified Framework for Evaluating Natural Language Generation** \
-Mingkai Deng∗,   Bowen Tan∗ (equal contribution),   Zhengzhong Liu,   Eric P. Xing,   Zhiting Hu \
+Mingkai Deng*,   Bowen Tan* (equal contribution),   Zhengzhong Liu,   Eric P. Xing,   Zhiting Hu \
 EMNLP 2021 \
 [[ArXiv]]()
 [[Slides]]()
