@@ -60,4 +60,4 @@ Correlation scores will be printed in the running terminal, and evaluation score
 
 ## Results
 All result numbers can be found in the appendix of our paper.  
-(exactly the same numbers would be got with [our trained models](https://drive.google.com/drive/folders/1IxqDRKjE1XJzPvAVpvFunyG3InSRofxN?usp=sharing)).
+(exactly the same numbers would be got with [our trained models](https://drive.google.com/drive/folders/1IxqDRKjE1XJzPvAVpvFunyG3InSRofxN?usp=sharing).)
