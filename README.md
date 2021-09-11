@@ -34,7 +34,7 @@ assert torch.all(torch.abs(output.sum(dim=0) - features.sum(dim=0)) < 1e-4)
 
 ## Alignment Model Training
 
-The constructed data and trained models can be directed downloaded [here](). If you want to run the process, see below.
+The constructed data and trained models can be directed downloaded [here](https://drive.google.com/drive/folders/1IxqDRKjE1XJzPvAVpvFunyG3InSRofxN?usp=sharing). If you want to run the process, see below.
 
 ### Data Construction
 The script to construct data for our discriminative (D) and regression (R) model: [scripts/construct_data.sh](scripts/construct_data.sh). 
@@ -59,4 +59,4 @@ The script to test out alignment models: [scripts/test_correlation.sh](scripts/t
 Correlation scores will be printed in the running terminal, and evaluation scores for all examples will be saved in ```eval_results/```.
 
 ## Results
-All result numbers can be found in the appendix of our paper. (exactly the same numbers would be got with [our trained models]()).
+All result numbers can be found in the appendix of our paper. (exactly the same numbers would be got with [our trained models](https://drive.google.com/drive/folders/1IxqDRKjE1XJzPvAVpvFunyG3InSRofxN?usp=sharing)).
