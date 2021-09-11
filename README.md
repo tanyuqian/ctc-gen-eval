@@ -47,14 +47,14 @@ The script to train the discriminative models: [scripts/train_discriminative.sh]
 
 Checkpoints will be saved in ```ckpts/```.
 
-### Training Discriminative Model (R)
-The script to train the discriminative models: [scripts/train_regression.sh](scripts/train_regression.sh).
+### Training Regression Model (R)
+The script to train the regression models: [scripts/train_regression.sh](scripts/train_regression.sh).
 
 Checkpoints will be saved in ```xxx/```.
 
 
 ## Test Correlation
-The script to test out alignment models: [scripts/test_correlation.sh](scripts/test_correlation.sh) (instance-level) & [scripts/test_correlation_system.sh](scripts/test_correlation_system.sh) (system-level). 
+The script to test alignment models: [scripts/test_correlation.sh](scripts/test_correlation.sh) (instance-level) & [scripts/test_correlation_system.sh](scripts/test_correlation_system.sh) (system-level). 
 
 Correlation scores will be printed in the running terminal, and evaluation scores for all examples will be saved in ```eval_results/```.
 
