@@ -44,15 +44,15 @@ class DiscriminativeAligner(Aligner, LightningModule):
             input_text, context)[:MAX_LENGTH].unsqueeze(0)
         features = self._roberta.extract_features(tokens=tokens)[0]
 
-        try:
+        try: # remove assertion at fairseq/models/roberta/alignment_utils.py, line 96, # some none alphabet characters
             len_input_text = self._roberta.encode(input_text).shape[0]
             word_features = self.extract_features_aligned_to_words(
                 input_text=input_text,
                 words=words,
                 features=features[:len_input_text])
         except:
-            # print(f'Error bpe-to-words, '
-            #       f'word_logits=None for this batch: {input_text}')
+            print(f'Error bpe-to-words, '
+                  f'word_logits=None for this batch: {input_text}')
             return None
 
         word_logits = self._classifier(word_features)

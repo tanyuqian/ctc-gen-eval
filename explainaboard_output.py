@@ -34,15 +34,16 @@ class ExplainaboardDataset(object):
                 sys_outputs = item['sys_summs']
 
                 yield TestExample(document, refs, sys_outputs)
-                # for each_sys in item['sys_summs'].keys():
-                #     summary = item['sys_summs'][each_sys]['sys_summ']
-                #     scores = summary = item['sys_summs'][each_sys]['scores']
+        elif self.dataset_name in ['newsroom']:
+            for item in self.org_dataset:
+                document = item['src']
+                refs = item['ref_summ']
+                sys_outputs = item['sys_summs']
 
-                #     yield TestExample(document, refs, summary, scores)
-                # yield 0
+                yield TestExample(document, refs, sys_outputs)
 
-    def WriteaData(self, full_item):
-        with jsonlines.open(f'data/Explainaboard/{self.dataset_name}_ctc.jsonl', mode='a') as writer:
+    def WriteaData(self, full_item, save_pth):
+        with jsonlines.open(save_pth, mode='a') as writer:
             writer.write(full_item)
 
 
@@ -70,21 +71,25 @@ def explainaboard_output(dataset_name='qags_xsum',
     for example in tqdm(dataset.ReadaData(), desc='Testing'):
         if isinstance(example, TestExample):
             for each_sys in example.sys_outputs.keys():
-                if aspect == 'relevance':
+                if 'relevance' in aspect:
                     align_y_x = aligner.get_score(
                         input_text=example.sys_outputs[each_sys]['sys_summ'],
                         context=example.src)
                     align_r_y = aligner.get_score(
                         input_text=example.context,
                         context=example.sys_outputs[each_sys]['sys_summ'])
-                    pred_score = align_y_x * align_r_y
+                    if align_y_x is not None and align_r_y is not None:
+                        pred_score = align_y_x * align_r_y
+                    else:
+                        pred_score = None
                     example.sys_outputs[each_sys]['scores']['ctc_relevance'] = pred_score
-                elif aspect == 'consistency':
+                if 'consistency' in aspect:
                     pred_score = aligner.get_score(
                         input_text=example.sys_outputs[each_sys]['sys_summ'], context=example.src)
                     example.sys_outputs[each_sys]['scores']['ctc_consistency'] = pred_score
 
-            dataset.WriteaData({'src':example.src, 'ref_summs':example.context, 'sys_summs':example.sys_outputs})
+            dataset.WriteaData({'src': example.src, 'ref_summs': example.context, 'sys_summs': example.sys_outputs},
+                               f'data/Explainaboard/{dataset_name}_{aspect}_{aligner_type}_ctc.jsonl')
             # print(example.sys_outputs)
 
         else:
@@ -94,9 +99,9 @@ def explainaboard_output(dataset_name='qags_xsum',
 
 if __name__ == '__main__':
     explainaboard_output(dataset_name='summeval',
-                         aspect='relevance',
-                         aligner_type='bert',
-                         disc_init=None,
+                         aspect='consistency_relevance',
+                         aligner_type='disc',
+                         disc_init='/home/yzha/ctc_task/ctc-gen-eval/ckpts/newsroom/disc.ckpt',
                          bert_model_type='roberta-large',
                          bert_rescale_with_baseline=False,
                          dialog_context='fact_history',

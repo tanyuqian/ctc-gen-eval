@@ -75,7 +75,7 @@ def get_discriminative_token_labels(template, answers, fillings):
 
 
 def get_context(constructed_doc, dataset_name, dialog_context):
-    if dataset_name in ['xsum', 'cnndm']:
+    if dataset_name in ['xsum', 'cnndm', 'newsroom']:
         context = constructed_doc['src']
     elif dataset_name in ['yelp']:
         context = constructed_doc['text']
@@ -149,7 +149,13 @@ def get_examples_for_discriminative_construction(dataset_name):
                 'fact': text_clean(d['fact']),
                 'ref': text_clean(d['response'])
             })
-
+    elif dataset_name == 'newsroom':
+        for d in load_dataset("newsroom", data_dir='~/datasets/newsroom/')['train']:
+            examples.append({
+                'idx': len(examples),
+                'src': text_clean(d['text']),
+                'ref': text_clean(d['summary'])
+            })
     return examples
 
 
