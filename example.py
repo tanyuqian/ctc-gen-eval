@@ -6,5 +6,5 @@ fact = "from left, emma baker, daniel saperstein and taylor mulitz of flasher wi
 
 scorer = DialogScorer(dataset='topical_chat', aligner='E')
 
-scorer.score(fact=fact, dialog_history=dialog_history, hypo=hypo, aspect='engaging')
+scorer.score(fact=fact, dialog_history=dialog_history, hypo=hypo, aspect='engagingness')
 
