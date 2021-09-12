@@ -1,4 +1,4 @@
-from models.aligner import Aligner
+from ctc_score.models.aligner import Aligner
 from bleurt.score import BleurtScorer
 
 class BLEURTAligner(Aligner, BleurtScorer): 

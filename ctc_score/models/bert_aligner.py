@@ -5,7 +5,7 @@ import torch
 from bert_score import BERTScorer
 from bert_score.utils import get_bert_embedding, sent_encode
 
-from models.aligner import Aligner
+from ctc_score.models.aligner import Aligner
 
 
 class BERTAligner(BERTScorer, Aligner):
