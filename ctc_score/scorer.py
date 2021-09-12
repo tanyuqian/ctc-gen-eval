@@ -1,3 +1,6 @@
+import json
+
+import ctc_score
 from ctc_score.models.discriminative_aligner import DiscriminativeAligner
 from ctc_score.models.bert_aligner import BERTAligner
 # from ctc_score.models.bleurt_aligner import BLEURTAligner
@@ -24,19 +27,12 @@ class Scorer:
         raise NotImplementedError
 
 
-default_configs = {
-    'E': {
-        'model_type': 'bert-base-uncased',
-        'lang': 'en',
-        'device': 'cuda'
-    }
-}
-
-
 def set_aligner_configs(dataset, aligner, aligner_configs):
     if aligner_configs is None:
         aligner_configs = {}
 
+    default_configs = json.load(
+        open(f'{ctc_score.__path__}/default_configs.json'))
     for key, value in default_configs[aligner].items():
         if key not in aligner_configs:
             aligner_configs[key] = value
