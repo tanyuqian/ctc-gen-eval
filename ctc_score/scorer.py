@@ -1,6 +1,6 @@
 from ctc_score.models.discriminative_aligner import DiscriminativeAligner
 from ctc_score.models.bert_aligner import BERTAligner
-from ctc_score.models.bleurt_aligner import BLEURTAligner
+# from ctc_score.models.bleurt_aligner import BLEURTAligner
 
 
 class Scorer:
