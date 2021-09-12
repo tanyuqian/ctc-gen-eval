@@ -16,7 +16,7 @@ class Scorer:
             if aligner == 'D':
                 pass
             elif aligner == 'E':
-                self._aligner = BERTAligner(**aligner_configs)
+                self._aligner = BERTAligner(**self._aligner_configs)
             elif aligner == 'R':
                 pass
 
