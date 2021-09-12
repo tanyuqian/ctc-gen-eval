@@ -1,6 +1,7 @@
 {
     "E": {
         "model_type": "bert-base-uncased",
+        "aggr_type": "mean",
         "lang": "en",
         "device": "cuda"
     }
