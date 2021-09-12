@@ -26,7 +26,7 @@ class Scorer:
 
 default_configs = {
     'E': {
-        'model_type': 'bert-base',
+        'model_type': 'bert-base-uncased',
         'lang': 'en',
         'device': 'cuda'
     }
