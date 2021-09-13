@@ -1,8 +1,12 @@
 {
     "E": {
         "model_type": "bert-base-uncased",
-        "aggr_type": "mean",
         "lang": "en",
+        "device": "cuda"
+    },
+    "D": {
+        "topical_chat-fact": "https://drive.google.com/file/d/1K0esaW4g5renxGeHt5brjPDSgbsO5LVn/view?usp=sharing",
+        "topical_chat-fact_history": "https://drive.google.com/file/d/15syenU4xDel-cR-TbBGtrBXM1CCtvQJO/view?usp=sharing",
         "device": "cuda"
     }
 }

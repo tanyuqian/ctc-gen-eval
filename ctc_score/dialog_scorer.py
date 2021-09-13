@@ -2,8 +2,8 @@ from ctc_score.scorer import Scorer
 
 
 class DialogScorer(Scorer):
-    def __init__(self, dataset, aligner, aligner_configs=None):
-        Scorer.__init__(self, dataset, aligner, aligner_configs)
+    def __init__(self, dataset, align, aligner_configs=None):
+        Scorer.__init__(self, dataset, align, aligner_configs)
 
         assert self._dataset in ['topical_chat', 'persona_chat']
 
@@ -15,10 +15,14 @@ class DialogScorer(Scorer):
 
         if aspect == 'groundedness':
             context = fact
+            aligner = self._get_aligner(f'{self._align}-{self._dataset}-fact')
+
         elif aspect == 'engagingness':
             context = '\n\n\n'.join([fact.strip(), dialog_history.strip()])
+            aligner = self._get_aligner(
+                f'{self._align}-{self._dataset}-fact_history')
 
-        return self._aligner.get_score(
+        return aligner.get_score(
             input_text=hypo,
             context=context,
             remove_stopwords=remove_stopwords)
