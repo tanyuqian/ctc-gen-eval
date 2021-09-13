@@ -5,7 +5,8 @@ from forte.data.data_utils import maybe_download
 
 a_model_url_dict = {'cnndm': 'https://drive.google.com/file/d/1GjAGC3dMws8zK9hrv5xKBluIi_q-TYd2/view?usp=sharing',
                     'xsum': 'https://drive.google.com/file/d/1-1FROBMQ1AvONS3fbGYJOGiVuyDwKwSg/view?usp=sharing',
-                    'yelp': 'https://drive.google.com/file/d/1-5WufCq8faSlXcjkykkTR6UwVe-etFVA/view?usp=sharing'
+                    'yelp': 'https://drive.google.com/file/d/1-5WufCq8faSlXcjkykkTR6UwVe-etFVA/view?usp=sharing',
+                    'newsroom': 'https://drive.google.com/file/d/1PDShXZpn_1q6WIKCU3Vr1MNw15OWKMDh/view?usp=sharing'
                     }
 persona_chat_model_url_dict = {
     'fact': 'https://drive.google.com/file/d/1-KoWzZwV2_8Abqo_d118cZL2MEUNlwmQ/view?usp=sharing',
@@ -23,7 +24,8 @@ cons_data_url_dict = {'cnndm': 'https://drive.google.com/file/d/1fIDqCHt1D9Txt-5
                       'xsum': 'https://drive.google.com/file/d/10-6nRvf0aC9havRfDGyMvnw5cNRDNggD/view?usp=sharing',
                       'yelp': 'https://drive.google.com/file/d/1q0rb3ClOY8KI8V5jsrG8IImhfl8QCUip/view?usp=sharing',
                       'persona_chat': 'https://drive.google.com/file/d/1nyH6wD7rIJVvP1OyuAlCBpO_rgmUJFue/view?usp=sharing',
-                      'topical_chat': 'https://drive.google.com/file/d/1ZM9M81l8rB_DdAU_K17UoOwP7lfoObao/view?usp=sharing'
+                      'topical_chat': 'https://drive.google.com/file/d/1ZM9M81l8rB_DdAU_K17UoOwP7lfoObao/view?usp=sharing',
+                      'newsroom': 'https://drive.google.com/file/d/1iRyWtPfF9-PJO0eap6hSkQk8uhV5m_I0/view?usp=sharing'
                       }
 
 
