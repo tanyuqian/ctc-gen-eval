@@ -7,8 +7,6 @@ from texar.torch.data.data_utils import maybe_download
 from ctc_score.models.discriminative_aligner import DiscriminativeAligner
 from ctc_score.models.bert_aligner import BERTAligner
 
-from ctc_score import DialogScorer
-
 
 class Scorer:
     def __init__(self, dataset, align, aligner_configs):
@@ -27,7 +25,7 @@ class Scorer:
             self._aligner_configs = {}
 
         default_configs = json.load(
-            open(f'{ctc_score.__path__}/default_configs.json'))
+            open(f'{ctc_score.__path__[0]}/default_configs.json'))
         for key, value in default_configs[self._align].items():
             if key not in self._aligner_configs:
                 self._aligner_configs[key] = value
@@ -37,7 +35,8 @@ class Scorer:
             aligner_name = 'E'
 
         if aligner_name not in self._aligners:
-            aggr_type = 'sum' if isinstance(self, DialogScorer) else 'mean'
+            aggr_type = \
+                'sum' if isinstance(self, ctc_score.DialogScorer) else 'mean'
 
             if aligner_name == 'E':
                 aligner = BERTAligner(
