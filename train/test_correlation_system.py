@@ -1,16 +1,52 @@
 import os
 import json
 import fire
-from tqdm import tqdm
 import numpy as np
+from tqdm import tqdm
 
 from data_utils.data_utils import get_test_examples
 from models.discriminative_aligner import DiscriminativeAligner
 from models.bert_aligner import BERTAligner
 from models.bleurt_aligner import BLEURTAligner
 
-import pandas as pd
 from scipy.stats.stats import spearmanr, pearsonr, kendalltau
+
+
+def get_reference_score(aligner, input_text, context, aligner_type, remove_stopwords): 
+    if isinstance(input_text, list): 
+        align_list = []
+        for ref in input_text: 
+            if aligner_type == 'bleurt': 
+                i = context
+                c = ref
+            else: 
+                i = ref
+                c = context
+            
+            score = aligner.get_score(
+                        input_text=i,
+                        context=c,
+                        remove_stopwords=remove_stopwords)
+            align_list.append(score)
+            
+        align_score = np.array(align_list).mean()
+        
+    else: 
+        if aligner_type == 'bleurt': 
+            i = context
+            c = input_text
+        else: 
+            i = input_text
+            c = context
+                
+        align_score = aligner.get_score(
+                    input_text=i,
+                    context=c,
+                    remove_stopwords=remove_stopwords)
+            
+    return align_score
+        
+
 
 def main(dataset_name='qags_xsum',
          aspect='consistency',
@@ -23,13 +59,20 @@ def main(dataset_name='qags_xsum',
          dialog_context='fact_history',
          aggr_type='mean',
          remove_stopwords=False,
-         n_references=11,
-         join_references=False):
+         n_references=11):
 
     if aligner_type == 'disc':
         aligner = DiscriminativeAligner.load_from_checkpoint(
             aggr_type=aggr_type, checkpoint_path=disc_init).to('cuda')
         aligner.eval()
+        if relevance_y_x_init is not None: 
+            aligner_y_x = (DiscriminativeAligner
+                           .load_from_checkpoint(
+                               aggr_type=aggr_type, 
+                               checkpoint_path=relevance_y_x_init)
+                           .to('cuda'))
+            aligner_y_x.eval()
+            
     elif aligner_type == 'bert':
         aligner = BERTAligner(
             model_type=bert_model_type,
@@ -37,54 +80,39 @@ def main(dataset_name='qags_xsum',
             aggr_type=aggr_type,
             lang='en',
             device='cuda')
+        aligner_y_x = aligner
+        
     elif aligner_type == 'bleurt': 
         aligner = BLEURTAligner(
             aggr_type=aggr_type,
             checkpoint=bleurt_init)
+        if relevance_y_x_init is not None: 
+            aligner_y_x = BLEURTAligner(
+                aggr_type=aggr_type,
+                checkpoint=relevance_y_x_init)
 
     examples = get_test_examples(
         dataset_name=dataset_name, 
         aspect=aspect, 
         dialog_context=dialog_context,
         n_references=n_references)
-    
+
     all_preds = []
     pred_scores, true_scores = [], []
     for example in tqdm(examples, desc='Testing'):
         if isinstance(example, list):
             if aspect == 'relevance':
-                if join_references: 
-                    input_text = ' '.join(example[1].input_text)
-                    if aligner_type == 'bleurt': 
-                        align_r_y = aligner.get_score(
-                            input_text=example[1].context,
-                            context=input_text,
-                            remove_stopwords=remove_stopwords)
-                        
-                    else: 
-                        align_r_y = aligner.get_score(
-                            input_text=input_text,
-                            context=example[1].context,
-                            remove_stopwords=remove_stopwords)
-                        
-                else: 
-                    if aligner_type == 'bleurt': 
-                        align_r_y_list = [aligner.get_score(
-                            input_text=example[1].context,
-                            context=ref,
-                            remove_stopwords=remove_stopwords)
-                            for ref in example[1].input_text]
-                        align_r_y = np.array(align_r_y_list).mean()
-                        
-                    else:
-                        align_r_y_list = [aligner.get_score(
-                            input_text=ref,
-                            context=example[1].context,
-                            remove_stopwords=remove_stopwords)
-                            for ref in example[1].input_text]
-                        align_r_y = np.array(align_r_y_list).mean()
-                        
-                pred_score = align_r_y
+                align_r_y = get_reference_score(
+                                aligner=aligner, 
+                                input_text=example[1].input_text, 
+                                context=example[1].context, 
+                                aligner_type=aligner_type, 
+                                remove_stopwords=remove_stopwords)
+                align_y_x = aligner_y_x.get_score(
+                                input_text=example[0].input_text,
+                                context=example[0].context,
+                                remove_stopwords=remove_stopwords)
+                pred_score = align_r_y * align_y_x
                     
 
             elif aspect == 'preservation':
@@ -99,7 +127,6 @@ def main(dataset_name='qags_xsum',
                 pred_score = (align_y_x * align_x_y) / (align_y_x + align_x_y)
 
             all_preds.append({
-                'system': example[0].system,
                 'context_0': example[0].context,
                 'input_text_0': example[0].input_text,
                 'context_1': example[1].context,
@@ -120,7 +147,6 @@ def main(dataset_name='qags_xsum',
                 remove_stopwords=remove_stopwords)
 
             all_preds.append({
-                'system': example.system,
                 'context': example.context,
                 'input_text': example.input_text,
                 'pred_score': pred_score
@@ -129,36 +155,6 @@ def main(dataset_name='qags_xsum',
             if pred_score is not None:
                 pred_scores.append(pred_score)
                 true_scores.append(example.score)
-    # print(all_preds[0])
-    if aspect == 'relevance': 
-        if aligner_type == 'disc':
-            aligner = (DiscriminativeAligner
-                       .load_from_checkpoint(
-                           aggr_type=aggr_type, 
-                           checkpoint_path=relevance_y_x_init)
-                       .to('cuda'))
-            aligner.eval()
-        elif aligner_type == 'bleurt': 
-            aligner = BLEURTAligner(
-                aggr_type=aggr_type,
-                checkpoint=relevance_y_x_init)
-            
-        new_all_preds = []
-        pred_scores, true_scores = [], []
-        for example, pred in tqdm(zip(examples, all_preds), desc='Testing'): 
-            assert isinstance(example, list)
-            align_y_x = aligner.get_score(
-                input_text=example[0].input_text,
-                context=example[0].context,
-                remove_stopwords=remove_stopwords)
-            align_r_y = pred['pred_score']
-            pred_score = align_r_y * align_y_x
-            pred.update({'pred_score': pred_score})
-            new_all_preds.append(pred)
-            pred_scores.append(pred_score)
-            true_scores.append(example[0].score)
-        # all_preds = new_all_preds
-    # print(all_preds[0])
     
     df_preds = pd.DataFrame(all_preds)
     # print(df_preds.head())

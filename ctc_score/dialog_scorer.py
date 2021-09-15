@@ -6,8 +6,8 @@ class DialogScorer(Scorer):
         Scorer.__init__(self, align=align, aggr_type=aggr_type, device=device)
 
     def score(self, fact, dialog_history, hypo, aspect, remove_stopwords=True):
-        if 'topical_chat' in self._align:
-            fact = 'fact: ' + fact
+#         if 'topical_chat' in self._align:
+#             fact = 'fact: ' + fact
 
         kwargs = dict(
             fact=fact,

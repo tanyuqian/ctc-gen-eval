@@ -6,6 +6,7 @@ from ctc_score.configs import ALIGNS, E_MODEL_TYPES, DR_MODEL_LINKS
 
 from ctc_score.models.discriminative_aligner import DiscriminativeAligner
 from ctc_score.models.bert_aligner import BERTAligner
+from ctc_score.models.bleurt_aligner_pt import BLEURTAligner
 
 
 class Scorer:
@@ -27,9 +28,10 @@ class Scorer:
 
         if self._align.startswith('E'):
             aligner = BERTAligner(
-                model_type=E_MODEL_TYPES[self._align[2:]],
+                model_type=E_MODEL_TYPES[self._align[2:]]['name'],
                 aggr_type=self._aggr_type,
                 lang='en',
+                num_layers=E_MODEL_TYPES[self._align[2:]].get('num_layers'),
                 device=self._device)
 
         elif self._align.startswith('D'):
@@ -51,8 +53,23 @@ class Scorer:
             ).to(self._device)
             aligner.eval()
 
-        elif aligner_name.startswith('R'):
-            pass
+        elif self._align.startswith('R'):
+            aligner_link = DR_MODEL_LINKS[self._align][aligner_name]
+
+            os.makedirs(
+                f'{os.getenv("HOME")}/.cache/ctc_score_models/{self._align}/',
+                exist_ok=True)
+            maybe_download(
+                urls=aligner_link,
+                path=f'{os.getenv("HOME")}/.cache/',
+                filenames=f'ctc_score_models/{self._align}/{aligner_name}.pt')
+
+            ckpt_path = f'{os.getenv("HOME")}/.cache/' \
+                        f'ctc_score_models/{self._align}/{aligner_name}.pt'
+            aligner = BLEURTAligner(
+                          aggr_type=self._aggr_type,
+                          checkpoint=ckpt_path,
+                          device=self._device)
 
         self._aligners[aligner_name] = aligner
 

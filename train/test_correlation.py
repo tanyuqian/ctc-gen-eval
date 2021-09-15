@@ -7,8 +7,7 @@ from tqdm import tqdm
 from data_utils.data_utils import get_test_examples
 from models.discriminative_aligner import DiscriminativeAligner
 from models.bert_aligner import BERTAligner
-# from models.bleurt_aligner import BLEURTAligner
-from models.bleurt_aligner_pt import BLEURTAligner
+from models.bleurt_aligner import BLEURTAligner
 
 from scipy.stats.stats import spearmanr, pearsonr, kendalltau
 

@@ -1,4 +1,4 @@
-from models.aligner import Aligner
+from ctc_score.models.aligner import Aligner
 import torch
 import torch.nn as nn
 import transformers
@@ -27,7 +27,7 @@ class BleurtModel(nn.Module):
 
 
 class BLEURTAligner(Aligner): 
-    def __init__(self, aggr_type, checkpoint, *args, **kwargs):
+    def __init__(self, aggr_type, checkpoint, device, *args, **kwargs):
         Aligner.__init__(self, aggr_type=None)
         
         state_dict = torch.load(checkpoint)
@@ -38,7 +38,9 @@ class BLEURTAligner(Aligner):
             param.requires_grad = False
         bleurt_model.eval()
         
-        self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
+        self.device = device
+        if self.device is None: 
+            self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
         
         self.bleurt_model = bleurt_model.to(self.device)
         self.tokenizer = AutoTokenizer.from_pretrained(DEFAULT_TOKENIZER)
