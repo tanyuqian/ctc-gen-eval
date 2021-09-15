@@ -22,7 +22,7 @@ print(score)
 # Yelp
 input_sent = "i complained and received a complimentary room for one night ."
 hypo = "i complained and received a great deal for date night ."
-scorer = StyleTransferScorer(align='D-yelp')
+scorer = StyleTransferScorer(align='E-roberta')
 
 score = scorer.score(input_sent=input_sent, hypo=hypo, aspect='preservation')
 print(score)
