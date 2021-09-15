@@ -34,6 +34,10 @@ class Scorer:
 
         elif self._align.startswith('D'):
             aligner_link = DR_MODEL_LINKS[self._align][aligner_name]
+
+            os.makedirs(
+                f'{os.getenv("HOME")}/.cache/ctc_score_models/{self._align}/',
+                exist_ok=True)
             maybe_download(
                 urls=aligner_link,
                 path=f'{os.getenv("HOME")}/.cache/',
