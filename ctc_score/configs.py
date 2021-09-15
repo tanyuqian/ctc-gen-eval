@@ -5,12 +5,12 @@ ALIGNS = [
     "D-persona_chat",
     "D-cnndm",
     "D-xsum",
-    "D-yelp"
-    "E-topical_chat",
-    "E-persona_chat",
-    "E-cnndm",
-    "E-xsum",
-    "E-yelp"
+    "D-yelp",
+    "R-topical_chat",
+    "R-persona_chat",
+    "R-cnndm",
+    "R-xsum",
+    "R-yelp"
 ]
 
 E_MODEL_TYPES = {
