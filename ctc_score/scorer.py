@@ -1,64 +1,55 @@
 import os
-import json
-import ctc_score
 
 from texar.torch.data.data_utils import maybe_download
+
+from ctc_score.configs import ALIGNS, E_MODEL_TYPES, DR_MODEL_LINKS
 
 from ctc_score.models.discriminative_aligner import DiscriminativeAligner
 from ctc_score.models.bert_aligner import BERTAligner
 
 
 class Scorer:
-    def __init__(self, dataset, align, aligner_configs):
-        self._dataset = dataset
+    def __init__(self, align, aggr_type, device):
+        assert align in ALIGNS
 
         self._align = align
         self._aligners = {}
-        self._aligner_configs = aligner_configs
-        self._fix_aligner_configs()
+
+        self._aggr_type = aggr_type
+        self._device = device
 
     def score(self, *args, **kwargs):
         raise NotImplementedError
 
-    def _fix_aligner_configs(self):
-        if self._aligner_configs is None:
-            self._aligner_configs = {}
-
-        default_configs = json.load(
-            open(f'{ctc_score.__path__[0]}/default_configs.json'))
-        for key, value in default_configs[self._align].items():
-            if key not in self._aligner_configs:
-                self._aligner_configs[key] = value
-
     def _get_aligner(self, aligner_name):
-        if aligner_name.startswith('E'):
-            aligner_name = 'E'
+        if aligner_name in self._aligners:
+            return self._aligners[aligner_name]
 
-        if aligner_name not in self._aligners:
-            aggr_type = \
-                'sum' if isinstance(self, ctc_score.DialogScorer) else 'mean'
+        if self._align.startswith('E'):
+            aligner = BERTAligner(
+                model_type=E_MODEL_TYPES[self._align[2:]],
+                aggr_type=self._aggr_type,
+                lang='en',
+                device=self._device)
 
-            if aligner_name == 'E':
-                aligner = BERTAligner(
-                    **self._aligner_configs, aggr_type=aggr_type)
+        elif self._align.startswith('D'):
+            aligner_link = DR_MODEL_LINKS[self._align][aligner_name]
+            maybe_download(
+                urls=aligner_link,
+                path=f'{os.getenv("HOME")}/.cache/',
+                filenames=f'ctc_score_models/{self._align}/{aligner_name}.ckpt')
 
-            elif aligner_name.startswith('D'):
-                aligner_link = self._aligner_configs[aligner_name[2:]]
-                maybe_download(
-                    urls=aligner_link,
-                    path=f'{os.getenv("HOME")}/.cache/',
-                    filenames=f'{aligner_name}.ckpt')
-                ckpt_path = f'{os.getenv("HOME")}/.cache/{aligner_name}.ckpt'
+            ckpt_path = f'{os.getenv("HOME")}/.cache/' \
+                        f'ctc_score_models/{self._align}/{aligner_name}.ckpt'
+            aligner = DiscriminativeAligner.load_from_checkpoint(
+                aggr_type=self._aggr_type,
+                checkpoint_path=ckpt_path
+            ).to(self._device)
+            aligner.eval()
 
-                aligner = DiscriminativeAligner.load_from_checkpoint(
-                    aggr_type=aggr_type,
-                    checkpoint_path=ckpt_path
-                ).to(self._aligner_configs['device'])
-                aligner.eval()
+        elif aligner_name.startswith('R'):
+            pass
 
-            elif aligner_name.startswith('R'):
-                pass
-
-            self._aligners[aligner_name] = aligner
+        self._aligners[aligner_name] = aligner
 
         return self._aligners[aligner_name]
