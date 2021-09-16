@@ -6,6 +6,7 @@ if sys.version_info < (3, 6):
 
 setuptools.setup(
     name="ctc_score",
+    version='0.1.0',
     url="https://github.com/tanyuqian/ctc-gen-eval",
     install_requires=[
         'distance',
