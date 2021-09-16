@@ -1,18 +1,5 @@
 # CTC: A Unified Framework for Evaluating Natural Language Generation
 
-This repo contains preliminary code of the following paper: \
-**Compression, Transduction, and Creation: A Unified Framework for Evaluating Natural Language Generation** \
-Mingkai Deng*,   Bowen Tan* (equal contribution),   Zhengzhong Liu,   Eric P. Xing,   Zhiting Hu \
-EMNLP 2021 \
-[[ArXiv]]()
-[[Slides]]()
-
-## Getting Started
-* Previous work on NLG evaluation has typically focused on a single task and developed individual evaluation metrics based on specific intuitions.
-* In this paper, we propose a unifying perspective based on the nature of information change in NLG tasks, including compression (e.g., summarization), transduction (e.g., text rewriting), and creation (e.g., dialog).
-
-![](alignment_models.png)
-
 ## Requirements
 
 Our python version is ```3.7```. Run these commands before you start:
