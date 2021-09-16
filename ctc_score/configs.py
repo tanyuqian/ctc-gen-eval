@@ -50,7 +50,7 @@ DR_MODEL_LINKS = {
     },
     "R-cnndm": {
         "doc_to_summ": "https://drive.google.com/file/d/1gJ_YcDxz880mCtctOagxRMihBU-HFniS/view?usp=sharing",
-        "summ_to_ref": "https://drive.google.com/file/d/1AO2pqUiMvAPhVIR8DBEbLt6UP9O8VPz5/view?usp=sharing"
+        "summ_to_ref": "https://drive.google.com/file/d/16y2ZhBzSVUHNnTEN_vHc_9J5pzAVonKI/view?usp=sharing"
     },
     "R-xsum": {
         "doc_to_summ": "https://drive.google.com/file/d/1-nf7ob2GjR7kbCjhZtIIDB6kT7EY8pHx/view?usp=sharing"

@@ -37,16 +37,10 @@ class SummarizationScorer(Scorer):
         aligner_summ_ref = self._get_aligner('summ_to_ref')
         align_r_y = []
         for ref in refs:
-            if self._align.startswith('R'): 
-                align_r_y.append(aligner_summ_ref.get_score(
-                    context=ref,
-                    input_text=hypo,
-                    remove_stopwords=remove_stopwords))
-            else:
-                align_r_y.append(aligner_summ_ref.get_score(
-                    context=hypo,
-                    input_text=ref,
-                    remove_stopwords=remove_stopwords))
+            align_r_y.append(aligner_summ_ref.get_score(
+                context=hypo,
+                input_text=ref,
+                remove_stopwords=remove_stopwords))
         align_r_y = sum(align_r_y) / len(align_r_y)
 
         return align_y_x * align_r_y
