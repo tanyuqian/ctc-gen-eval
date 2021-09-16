@@ -2,7 +2,7 @@ import os
 
 from texar.torch.data.data_utils import maybe_download
 
-from ctc_score.configs import ALIGNS, E_MODEL_TYPES, DR_MODEL_LINKS
+from ctc_score.configs import ALIGNS, E_MODEL_CONFIGS, DR_MODEL_LINKS
 
 from ctc_score.models.discriminative_aligner import DiscriminativeAligner
 from ctc_score.models.bert_aligner import BERTAligner
@@ -28,13 +28,12 @@ class Scorer:
 
         if self._align.startswith('E'):
             aligner = BERTAligner(
-                model_type=E_MODEL_TYPES[self._align[2:]]['name'],
+                **E_MODEL_CONFIGS[self._align[2:]],
                 aggr_type=self._aggr_type,
                 lang='en',
-                num_layers=E_MODEL_TYPES[self._align[2:]].get('num_layers'),
                 device=self._device)
 
-        elif self._align.startswith('D'):
+        else:
             aligner_link = DR_MODEL_LINKS[self._align][aligner_name]
 
             os.makedirs(
@@ -47,30 +46,20 @@ class Scorer:
 
             ckpt_path = f'{os.getenv("HOME")}/.cache/' \
                         f'ctc_score_models/{self._align}/{aligner_name}.ckpt'
-            aligner = DiscriminativeAligner.load_from_checkpoint(
-                aggr_type=self._aggr_type,
-                checkpoint_path=ckpt_path
-            ).to(self._device)
-            aligner.eval()
 
-        elif self._align.startswith('R'):
-            aligner_link = DR_MODEL_LINKS[self._align][aligner_name]
+            if self._align.startswith('D'):
+                aligner = DiscriminativeAligner.load_from_checkpoint(
+                    aggr_type=self._aggr_type,
+                    checkpoint_path=ckpt_path
+                ).to(self._device)
+                aligner.eval()
 
-            os.makedirs(
-                f'{os.getenv("HOME")}/.cache/ctc_score_models/{self._align}/',
-                exist_ok=True)
-            maybe_download(
-                urls=aligner_link,
-                path=f'{os.getenv("HOME")}/.cache/',
-                filenames=f'ctc_score_models/{self._align}/{aligner_name}.pt')
-
-            ckpt_path = f'{os.getenv("HOME")}/.cache/' \
-                        f'ctc_score_models/{self._align}/{aligner_name}.pt'
-            aligner = BLEURTAligner(
-                          aggr_type=self._aggr_type,
-                          checkpoint=ckpt_path,
-                          device=self._device)
+            else:
+                assert self._align.startswith('R')
+                aligner = BLEURTAligner(
+                    aggr_type=self._aggr_type,
+                    checkpoint=ckpt_path,
+                    device=self._device)
 
         self._aligners[aligner_name] = aligner
-
         return self._aligners[aligner_name]

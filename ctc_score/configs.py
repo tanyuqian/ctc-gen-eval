@@ -1,3 +1,9 @@
+TASKS = [
+    'style_transfer',
+    'summarization',
+    'dialog'
+]
+
 ALIGNS = [
     "E-bert",
     "E-roberta",
@@ -14,10 +20,10 @@ ALIGNS = [
     "R-yelp"
 ]
 
-E_MODEL_TYPES = {
-    'roberta': {'name': 'roberta-large'},
-    'bert': {'name': 'bert-base-uncased'},
-    'roberta-mnli': {'name': 'roberta-large-mnli', 'num_layers': 9}
+E_MODEL_CONFIGS = {
+    'roberta': {'model_type': 'roberta-large'},
+    'bert': {'model_type': 'bert-base-uncased'},
+    'roberta-mnli': {'model_type': 'roberta-large-mnli', 'num_layers': 9}
 }
 
 DR_MODEL_LINKS = {
