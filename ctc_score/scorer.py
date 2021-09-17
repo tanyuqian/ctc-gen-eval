@@ -32,7 +32,6 @@ class Scorer:
                 aggr_type=self._aggr_type,
                 lang='en',
                 device=self._device)
-
         else:
             aligner_link = DR_MODEL_LINKS[self._align][aligner_name]
 
@@ -43,7 +42,6 @@ class Scorer:
                 urls=aligner_link,
                 path=f'{os.getenv("HOME")}/.cache/',
                 filenames=f'ctc_score_models/{self._align}/{aligner_name}.ckpt')
-
             ckpt_path = f'{os.getenv("HOME")}/.cache/' \
                         f'ctc_score_models/{self._align}/{aligner_name}.ckpt'
 
@@ -53,7 +51,6 @@ class Scorer:
                     checkpoint_path=ckpt_path
                 ).to(self._device)
                 aligner.eval()
-
             else:
                 assert self._align.startswith('R')
                 aligner = BLEURTAligner(
