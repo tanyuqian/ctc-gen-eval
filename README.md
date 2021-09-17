@@ -49,15 +49,15 @@ ctc_score
     --remove_stopwords add_this_augument_to_remove_stopwords_in_aligning 
     --scores_save_path the_path_to_save_example-wise_scores 
     
-    # for --task=style_transfer
+    # for task=style_transfer
     --input_sent a_file_with_all_input_sentences (line-by-line)
     
-    # for --task=summarization
+    # for task=summarization
     --doc a_file_with_all_documents (line-by-line) 
     --refs a_file_with_all_references (line-by-line)
     (if each document has more than one reference, divide them by "|||")
     
-    # for --task=dialog
+    # for task=dialog
     --fact a_file_with_all_facts (line-by-line, required if --task=dialog) 
     --dialog_history a_file_with_all_dialog_histories (line-by-line, required if --task=dialog)
 ```
