@@ -58,8 +58,8 @@ ctc_score
     (if each document has more than one reference, divide them by "|||")
     
     # for task=dialog
-    --fact a_file_with_all_facts (line-by-line, required if --task=dialog) 
-    --dialog_history a_file_with_all_dialog_histories (line-by-line, required if --task=dialog)
+    --fact a_file_with_all_facts (line-by-line) 
+    --dialog_history a_file_with_all_dialog_histories (line-by-line)
 ```
     
 Example:
