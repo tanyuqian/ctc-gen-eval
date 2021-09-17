@@ -25,7 +25,7 @@ pip install -e .
 
 ## Usage
 
-We provide align models listed below
+We provide align models as listed below
 
 * `E-bert`: Embedding alignment model with BERT embeddings. 
 * `E-roberta`: Embedding alignment model with RoBERTa embeddings.
