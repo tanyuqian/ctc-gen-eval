@@ -1,0 +1,6 @@
+train/ckpts/
+train/constructed_data/
+train/data_utils/__pycache__/
+train/eval_results/
+train/lightning_logs/
+train/models/__pycache__/
