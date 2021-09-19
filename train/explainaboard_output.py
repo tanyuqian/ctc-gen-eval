@@ -93,13 +93,16 @@ def explainaboard_output(dataset_name='qags_xsum',
                          relevance_y_x_init=None,
                          bert_model_type='roberta-large',
                          bert_rescale_with_baseline=False,
+                         bert_num_layers=None,
                          dialog_context='fact_history',
                          remove_stopwords=False,
                          aggr_type='mean'):
     disp_model_name = {
         'cnndm': 'CNN/DM',
         'newsroom': 'NEWSROOM',
-        'xsum': 'XSUM'
+        'xsum': 'XSUM',
+        'roberta': 'RoBERTa-large',
+        'bert': 'BERT-base'
     }
     disp_aligner_name = {
         'disc': 'D',
@@ -121,10 +124,11 @@ def explainaboard_output(dataset_name='qags_xsum',
     elif aligner_type == 'bert':
         aligner = BERTAligner(
             model_type=bert_model_type,
-            rescale_with_baseline=bert_rescale_with_baseline,
+            num_layers=bert_num_layers,
             aggr_type=aggr_type,
             lang='en',
             device='cuda')
+        aligner_y_x = aligner
 
     for example in tqdm(dataset.ReadaData(), desc='Testing'):
         if isinstance(example, TestExample):
@@ -166,10 +170,10 @@ if __name__ == '__main__':
     explainaboard_output(dataset_name='newsroom',
                          aspect='relevance',
                          aligner_type='disc',
-                         pretrain_model='newsroom',
-                         disc_init='/home/yzha/ctc_task/ctc-gen-eval/ckpts/newsroom/disc.ckpt',
-                         relevance_y_x_init='/home/yzha/ctc_task/ctc-gen-eval/ckpts/cnndm_ref/disc.ckpt',
-                         bert_model_type='roberta-large',
+                         pretrain_model='cnndm', # or 'roberta'
+                         disc_init='/home/yzha/ctc_task/ctc-gen-eval/ckpts/cnndm/disc.ckpt',
+                         relevance_y_x_init='/home/yzha/ctc_task/ctc-gen-eval/ckpts/cnndm/disc.ckpt',
+                         bert_model_type='bert-base-uncased', #'roberta-large', #bert-base-uncased
                          bert_rescale_with_baseline=False,
                          dialog_context='fact_history',
                          aggr_type='mean')
