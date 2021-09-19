@@ -37,10 +37,10 @@ class ExplainaboardDataset(object):
                 yield TestExample(document, refs, sys_outputs)
         elif self.dataset_name in ['newsroom']:
             for item in self.org_dataset:
-                document = text_clean(item['src'])
-                refs = text_clean(item['ref_summ'])
+                document = item['src'].encode('ascii', errors='ignore').decode()
+                refs = item['ref_summ'].encode('ascii', errors='ignore').decode()
                 for each_sys in item['sys_summs'].keys():
-                    item['sys_summs'][each_sys]['sys_summ'] = text_clean(item['sys_summs'][each_sys]['sys_summ'])
+                    item['sys_summs'][each_sys]['sys_summ'] = item['sys_summs'][each_sys]['sys_summ'].encode('ascii', errors='ignore').decode()
                 sys_outputs = item['sys_summs'] # 
 
                 yield TestExample(document, refs, sys_outputs)
@@ -168,7 +168,7 @@ if __name__ == '__main__':
                          aligner_type='disc',
                          pretrain_model='newsroom',
                          disc_init='/home/yzha/ctc_task/ctc-gen-eval/ckpts/newsroom/disc.ckpt',
-                         relevance_y_x_init='/home/yzha/ctc_task/ctc-gen-eval/ckpts/newsroom/disc.ckpt',
+                         relevance_y_x_init='/home/yzha/ctc_task/ctc-gen-eval/ckpts/cnndm_ref/disc.ckpt',
                          bert_model_type='roberta-large',
                          bert_rescale_with_baseline=False,
                          dialog_context='fact_history',
