@@ -3,6 +3,7 @@ import json
 import fire
 import numpy as np
 from tqdm import tqdm
+import pandas as pd
 
 from data_utils.data_utils import get_test_examples
 from models.discriminative_aligner import DiscriminativeAligner
