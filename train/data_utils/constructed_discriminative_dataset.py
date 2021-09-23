@@ -13,7 +13,7 @@ class ConstructedDiscriminativeDataset(Dataset):
 
         for file_path in glob(f'constructed_data/{dataset_name}/*.json'):
             for doc in json.load(open(file_path)):
-                if dataset_name == "cnndm_ref": 
+                if dataset_name in ["cnndm_ref", "newsroom_ref"]: 
                     input_text, labels = get_discriminative_token_labels(
                         template=doc['template'], 
                         answers=doc['answers'],

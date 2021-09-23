@@ -50,8 +50,8 @@ def test_correlation_output(dataset_name, aspect):
     ctc_metrics = []
     gt_metrics = []
     counter = 0
-    ctc_name = f'CTC(E)(BERT-base)'
-    for example in tqdm(dataset.ReadaData(), desc='Testing'):
+    ctc_name = f'CTC(E)(RoBERTa-large)'
+    for example in tqdm(dataset.ReadaData(), desc='Collecting'):
         for each_sys in example.sys_outputs.keys():
             gt_metric = example.sys_outputs[each_sys]['scores'][aspect]
             ctc_metric = example.sys_outputs[each_sys]['scores'][ctc_name]
@@ -71,6 +71,7 @@ def test_correlation_output(dataset_name, aspect):
 
 
 if __name__ == "__main__":
-    test_correlation_output('newsroom_relevance_bert_bert_ctc', 'informativeness')
+    # test_correlation_output('newsroom_consistency_disc_newsroom_ctc', 'relevance')
     # test_correlation_output('summeval_relevance_disc_xsum_ctc', 'relevance')
-    # test_correlation_output('summeval_consistency_disc_xsum_ctc', 'consistency')
+    # test_correlation_output('summeval_consistency_disc_cnndm_ctc', 'consistency')
+    test_correlation_output('summeval_relevance_bert_roberta_ctc', 'relevance')

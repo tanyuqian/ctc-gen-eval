@@ -37,11 +37,14 @@ class ExplainaboardDataset(object):
                 yield TestExample(document, refs, sys_outputs)
         elif self.dataset_name in ['newsroom']:
             for item in self.org_dataset:
-                document = item['src'].encode('ascii', errors='ignore').decode()
-                refs = item['ref_summ'].encode('ascii', errors='ignore').decode()
+                document = item['src'].encode(
+                    'ascii', errors='ignore').decode()
+                refs = item['ref_summ'].encode(
+                    'ascii', errors='ignore').decode()
                 for each_sys in item['sys_summs'].keys():
-                    item['sys_summs'][each_sys]['sys_summ'] = item['sys_summs'][each_sys]['sys_summ'].encode('ascii', errors='ignore').decode()
-                sys_outputs = item['sys_summs'] # 
+                    item['sys_summs'][each_sys]['sys_summ'] = item['sys_summs'][each_sys]['sys_summ'].encode(
+                        'ascii', errors='ignore').decode()
+                sys_outputs = item['sys_summs']
 
                 yield TestExample(document, refs, sys_outputs)
 
@@ -140,14 +143,26 @@ def explainaboard_output(dataset_name='qags_xsum',
                         context=example.sys_outputs[each_sys]['sys_summ'],
                         aligner_type=aligner_type,
                         remove_stopwords=remove_stopwords)
+                    # align_y_r = get_reference_score(
+                    #     aligner=aligner,
+                    #     input_text=example.sys_outputs[each_sys]['sys_summ'],
+                    #     context=example.context,
+                    #     aligner_type=aligner_type,
+                    #     remove_stopwords=remove_stopwords)
                     align_y_x = aligner_y_x.get_score(
                         input_text=example.sys_outputs[each_sys]['sys_summ'],
                         context=example.src,
                         remove_stopwords=remove_stopwords)
-                
+                    # harm_r_y = (align_r_y * align_y_r) / \
+                    #     (align_r_y + align_y_r)
+                    # avg_r_y = (align_r_y + align_y_r) / 2
                     pred_score = align_y_x * align_r_y
                     example.sys_outputs[each_sys]['scores'][
                         f'CTC({disp_aligner_name[aligner_type]})({disp_model_name[pretrain_model]})'] = pred_score
+                    # example.sys_outputs[each_sys]['scores'][
+                    #     f'CTC(harm_r_y)'] = harm_r_y
+                    # example.sys_outputs[each_sys]['scores'][
+                    #     f'CTC(avg_r_y)'] = avg_r_y
                 if 'consistency' == aspect:
                     pred_score = aligner.get_score(
                         input_text=example.sys_outputs[each_sys]['sys_summ'], context=example.src, remove_stopwords=remove_stopwords)
@@ -167,13 +182,13 @@ def explainaboard_output(dataset_name='qags_xsum',
 
 
 if __name__ == '__main__':
-    explainaboard_output(dataset_name='newsroom',
+    explainaboard_output(dataset_name='summeval',
                          aspect='relevance',
-                         aligner_type='disc',
-                         pretrain_model='cnndm', # or 'roberta'
-                         disc_init='/home/yzha/ctc_task/ctc-gen-eval/ckpts/cnndm/disc.ckpt',
-                         relevance_y_x_init='/home/yzha/ctc_task/ctc-gen-eval/ckpts/cnndm/disc.ckpt',
-                         bert_model_type='bert-base-uncased', #'roberta-large', #bert-base-uncased
+                         aligner_type='bert',
+                         pretrain_model='bert',  # or 'roberta'
+                         disc_init='/home/yzha/ctc_task/ctc-gen-eval-new/train/ckpts/newsroom_ref/disc.ckpt',
+                         relevance_y_x_init='/home/yzha/ctc_task/ctc-gen-eval-new/train/ckpts/newsroom/disc_old.ckpt',
+                         bert_model_type='bert-base-uncased',  # 'roberta-large', #bert-base-uncased
                          bert_rescale_with_baseline=False,
                          dialog_context='fact_history',
                          aggr_type='mean')
