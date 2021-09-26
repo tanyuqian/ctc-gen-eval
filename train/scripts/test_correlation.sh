@@ -2,8 +2,8 @@
 
 # python test_correlation.py --dataset_name summeval --aspect consistency --aligner_type bert --bert_model_type bert-base-uncased --aggr_type mean
 # python test_correlation.py --dataset_name summeval --aspect consistency --aligner_type bert --aggr_type mean
-python test_correlation.py --dataset_name summeval --aspect consistency --aligner_type disc --disc_init ckpts/cnndm/disc.ckpt --aggr_type mean
-python test_correlation.py --dataset_name summeval --aspect consistency --aligner_type disc --disc_init ckpts/xsum/disc.ckpt --aggr_type mean
+# python test_correlation.py --dataset_name summeval --aspect consistency --aligner_type disc --disc_init ckpts/cnndm/disc.ckpt --aggr_type mean
+# python test_correlation.py --dataset_name summeval --aspect consistency --aligner_type disc --disc_init ckpts/xsum/disc.ckpt --aggr_type mean
 # python test_correlation.py --dataset_name summeval --aspect consistency --aligner_type bleurt --bleurt_init ckpts/cnndm/reg
 # python test_correlation.py --dataset_name summeval --aspect consistency --aligner_type bleurt --bleurt_init ckpts/xsum/reg
 
@@ -48,10 +48,10 @@ python test_correlation.py --dataset_name summeval --aspect consistency --aligne
 
 # # Yelp
 
-# python test_correlation.py --dataset_name yelp --aspect preservation --aligner_type bert --bert_model_type bert-base-uncased --aggr_type mean
-# python test_correlation.py --dataset_name yelp --aspect preservation --aligner_type bert --aggr_type mean
-# python test_correlation.py --dataset_name yelp --aspect preservation --aligner_type bert --bert_model_type roberta-large-mnli --bert_num_layers 9 --aggr_type mean
-# python test_correlation.py --dataset_name yelp --aspect preservation --aligner_type disc --disc_init ckpts/yelp/disc.ckpt --aggr_type mean
+python test_correlation.py --dataset_name yelp --aspect preservation --aligner_type bert --bert_model_type bert-base-uncased --aggr_type mean
+python test_correlation.py --dataset_name yelp --aspect preservation --aligner_type bert --aggr_type mean
+python test_correlation.py --dataset_name yelp --aspect preservation --aligner_type bert --bert_model_type roberta-large-mnli --bert_num_layers 9 --aggr_type mean
+python test_correlation.py --dataset_name yelp --aspect preservation --aligner_type disc --disc_init ckpts/yelp/disc.ckpt --aggr_type mean
 # python test_correlation.py --dataset_name yelp --aspect preservation --aligner_type bleurt --bleurt_init ckpts/yelp/reg
 
 # ####################

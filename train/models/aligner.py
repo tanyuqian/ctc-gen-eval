@@ -41,3 +41,16 @@ class Aligner:
             tokens=tokens,
             token_scores=token_scores,
             remove_stopwords=remove_stopwords)
+    
+    def get_sing_score(self, input_text, context, remove_stopwords):
+        tokens, token_scores = self.align(
+            input_text=input_text, context=context
+        )
+
+        if tokens is None:
+            return None
+
+        return self.aggregate(
+            tokens=tokens,
+            token_scores=token_scores,
+            remove_stopwords=remove_stopwords), tokens, token_scores
