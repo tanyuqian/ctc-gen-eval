@@ -19,10 +19,10 @@ for sys_out in tqdm(old_out.keys(), desc='Rename...'):
         new_out[sys_out]['hypos'][each_hypo]['scores']['fluency'] = old_out[sys_out]['hypos'][each_hypo]['scores']['fluency']
         new_out[sys_out]['hypos'][each_hypo]['scores']['relevance'] = old_out[sys_out]['hypos'][each_hypo]['scores']['relevance']
 
-        new_out[sys_out]['hypos'][each_hypo]['scores']['CTC_D_CNNDM_Consistency'] = old_out[sys_out]['hypos'][each_hypo]['scores']['CTC_D_CNNDM_Consistency']
-        new_out[sys_out]['hypos'][each_hypo]['scores']['CTC_D_XSUM_Consistency'] = old_out[sys_out]['hypos'][each_hypo]['scores']['CTC_D_XSUM_Consistency']
-        new_out[sys_out]['hypos'][each_hypo]['scores']['CTC_E_RoBERTa_Relevance'] = old_out[sys_out]['hypos'][each_hypo]['scores']['CTC_E_RoBERTa_Relevance']
-        new_out[sys_out]['hypos'][each_hypo]['scores']['CTC_D_CNNDM_Relevance'] = old_out[sys_out]['hypos'][each_hypo]['scores']['CTC_D_CNNDM_Relevance']
-        new_out[sys_out]['hypos'][each_hypo]['scores']['CTC_D_XSUM_Relevance'] = old_out[sys_out]['hypos'][each_hypo]['scores']['CTC_D_XSUM_Relevance']
+        new_out[sys_out]['hypos'][each_hypo]['scores']['CTC_Consistency_D_CNNDM'] = old_out[sys_out]['hypos'][each_hypo]['scores']['CTC_D_CNNDM_Consistency']
+        new_out[sys_out]['hypos'][each_hypo]['scores']['CTC_Consistency_D_XSUM'] = old_out[sys_out]['hypos'][each_hypo]['scores']['CTC_D_XSUM_Consistency']
+        new_out[sys_out]['hypos'][each_hypo]['scores']['CTC_Relevance_E_RoBERTa'] = old_out[sys_out]['hypos'][each_hypo]['scores']['CTC_E_RoBERTa_Relevance']
+        new_out[sys_out]['hypos'][each_hypo]['scores']['CTC_Relevance_D_CNNDM'] = old_out[sys_out]['hypos'][each_hypo]['scores']['CTC_D_CNNDM_Relevance']
+        new_out[sys_out]['hypos'][each_hypo]['scores']['CTC_Relevance_D_XSUM'] = old_out[sys_out]['hypos'][each_hypo]['scores']['CTC_D_XSUM_Relevance']
         
 json.dump(new_out, open('./summeval_out.json', 'w'))
