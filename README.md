@@ -8,8 +8,10 @@ EMNLP 2021
 ## Getting Started
 * Previous work on NLG evaluation has typically focused on a single task and developed individual evaluation metrics based on specific intuitions.
 * In this paper, we propose a unifying perspective based on the nature of information change in NLG tasks, including compression (e.g., summarization), transduction (e.g., text rewriting), and creation (e.g., dialog).
+* A common concept underlying the three broad categories is **information alignment**, which we define as the extent to which the information in one generation component is grounded in another.
+* We adopt contextualized language models to measure information alignment.
 
-![](alignment_models.png)
+![](figure.png)
 
 *(Note: We provide the user API below. Code to reproduce paper results can be found in the [train/](train/) folder.)*
 
@@ -24,18 +26,6 @@ pip install -e .
 ```
 
 ## Usage
-
-We provide align models as listed below
-
-* `E-bert`: Embedding alignment model with BERT embeddings. 
-* `E-roberta`: Embedding alignment model with RoBERTa embeddings.
-* `E-roberta-mnli`: Embedding alignment model with RoBERTa-MNLI embeddings. 
-* `D-topical_chat` or `R-topical_chat`: Discriminative (D) or Regression (R) alignment model trained with TopicalChat dialogs.
-* `D-persona_chat` or `R-persona_chat`: Discriminative (D) or Regression (R) alignment model trained with PersonaChat dialogs.
-* `D-cnndm` or `R-cnndm`: Discriminative (D) or Regression (R) alignment model trained with CNN/DailyMail documents.
-* `D-xsum` or `R-xsum`: Discriminative (D) or Regression (R) alignment model trained with XSUM documents.
-* `D-yelp` or `R-yelp`: Discriminative (D) or Regression (R) alignment model trained with Yelp dataset.
-
 We provide a command line interface (CLI) of CTC score as well as a python module.
 
 ### Command Line Interface (CLI)
@@ -73,6 +63,18 @@ ctc_score --task summarization \
           --scores_save_path scores.txt
 ```
 
+We provide these information alignment models (options of `--align`):
+
+* `E-bert`: Embedding alignment model with BERT embeddings. 
+* `E-roberta`: Embedding alignment model with RoBERTa embeddings.
+* `E-roberta-mnli`: Embedding alignment model with RoBERTa-MNLI embeddings. 
+* `D-topical_chat` or `R-topical_chat`: Discriminative (D) or Regression (R) alignment model trained with TopicalChat dialogs.
+* `D-persona_chat` or `R-persona_chat`: Discriminative (D) or Regression (R) alignment model trained with PersonaChat dialogs.
+* `D-cnndm` or `R-cnndm`: Discriminative (D) or Regression (R) alignment model trained with CNN/DailyMail documents.
+* `D-xsum` or `R-xsum`: Discriminative (D) or Regression (R) alignment model trained with XSUM documents.
+* `D-yelp` or `R-yelp`: Discriminative (D) or Regression (R) alignment model trained with Yelp dataset.
+
+More details of these models can be found in our [paper](https://arxiv.org/pdf/2109.06379.pdf).
 
 ### Python 
 We provide three scorers: `StyleTransferScorer`, `SummarizationScorer`, and `DialogScorer`. 
