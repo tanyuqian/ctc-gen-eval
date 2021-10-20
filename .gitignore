@@ -1,3 +1,7 @@
+# checkpoints and data
+train/ckpts/
+train/constructed_data/
+train/lightning_logs/
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
