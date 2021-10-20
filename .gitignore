@@ -1,4 +1,5 @@
 # checkpoints and data
+eval_results/
 train/ckpts/
 train/constructed_data/
 train/lightning_logs/
