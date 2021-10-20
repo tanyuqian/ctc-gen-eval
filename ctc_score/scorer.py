@@ -1,12 +1,14 @@
 import os
 
-from texar.torch.data.data_utils import maybe_download
+# from texar.torch.data.data_utils import maybe_download
+from ctc_score.download import maybe_download
 
 from ctc_score.configs import ALIGNS, E_MODEL_CONFIGS, DR_MODEL_LINKS
 
 from ctc_score.models.discriminative_aligner import DiscriminativeAligner
 from ctc_score.models.bert_aligner import BERTAligner
 from ctc_score.models.bleurt_aligner_pt import BLEURTAligner
+import torch
 
 
 class Scorer:
@@ -46,10 +48,13 @@ class Scorer:
                         f'ctc_score_models/{self._align}/{aligner_name}.ckpt'
 
             if self._align.startswith('D'):
-                aligner = DiscriminativeAligner.load_from_checkpoint(
-                    aggr_type=self._aggr_type,
-                    checkpoint_path=ckpt_path
-                ).to(self._device)
+                aligner = DiscriminativeAligner(
+                    aggr_type=self._aggr_type).to(self._device)
+                aligner.load_state_dict(torch.load(ckpt_path)['state_dict'])
+                # aligner = DiscriminativeAligner.load_from_checkpoint(
+                #     aggr_type=self._aggr_type,
+                #     checkpoint_path=ckpt_path
+                # ).to(self._device)
                 aligner.eval()
             else:
                 assert self._align.startswith('R')
