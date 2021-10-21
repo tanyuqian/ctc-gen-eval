@@ -68,7 +68,7 @@ class DiscriminativeAligner(Aligner, LightningModule):
 
     #     return word_logits
 
-        # def extract_features_aligned_to_words(self, input_text, words, features):
+    # def extract_features_aligned_to_words(self, input_text, words, features):
     #     from fairseq.models.roberta import alignment_utils
     #     bpe_toks = self._roberta.encode(input_text)
 
@@ -223,7 +223,6 @@ class DiscriminativeAligner(Aligner, LightningModule):
 
         return alignment
 
-
     def training_step(self, batch, batch_idx):
         batch_loss = []
 
@@ -340,9 +339,10 @@ class DiscriminativeAligner(Aligner, LightningModule):
     def align(self, input_text, context):
         input_text, context = text_clean(input_text), text_clean(context)
 
-        input_text = self._roberta.decode(
-            self._roberta.encode(input_text)[:MAX_LENGTH // 2])
+        input_text = self._roberta_tokenizer.decode(
+            self._roberta_tokenizer(input_text, return_tensors='pt')['input_ids'][0][:MAX_LENGTH // 2])
 
+        input_text = input_text.replace('<s>','').replace('</s>','')
         word_logits = self(
             input_text=input_text,
             words=get_words(input_text),
