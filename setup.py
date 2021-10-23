@@ -9,18 +9,11 @@ setuptools.setup(
     version='0.1.0',
     url="https://github.com/tanyuqian/ctc-gen-eval",
     install_requires=[
-        # 'distance',
         'nltk',
         'transformers==4.3.3',
-        # 'pytorch_lightning==1.2.6',
-        # 'fairseq==0.10.0',
-        # 'spacy==2.3.0',
         'datasets==1.5.0',
-        # 'summa',
         'cleantext',
-        # 'benepar',
         'bert_score==0.3.9',
-        # 'texar_pytorch==0.1.3'
     ],
     entry_points={
         'console_scripts': [
