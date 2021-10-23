@@ -1,1 +1,1 @@
-python finetune.py --dataset_name cnndm --dialog_context [fact/history/fact_history/history_fact]
+python finetune.py --dataset_name $dataset_name --n_epochs 1 --dialog_context [fact_history]
