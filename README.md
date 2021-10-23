@@ -17,6 +17,7 @@ EMNLP 2021
 
 ## Installation
 * Python version >= 3.6
+
 Install with pip from PYPI by
 ```
 pip install ctc_score
