@@ -17,8 +17,12 @@ EMNLP 2021
 
 ## Installation
 * Python version >= 3.6
+Install with pip from PYPI by
+```
+pip install ctc_score
+```
 
-Install with pip by
+Or install with pip from the repository by
 ```
 git clone https://github.com/tanyuqian/ctc-gen-eval.git
 cd ctc-gen-eval/
