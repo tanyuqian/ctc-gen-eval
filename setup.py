@@ -8,6 +8,8 @@ setuptools.setup(
     name="ctc_score",
     version='0.1.0',
     url="https://github.com/tanyuqian/ctc-gen-eval",
+
+    packages=setuptools.find_packages(),
     install_requires=[
         'nltk',
         'transformers==4.3.3',
@@ -20,4 +22,12 @@ setuptools.setup(
             "ctc_score=ctc_score_cli.score:main",
         ]
     },
+    include_package_data=True,
+    python_requires='>=3.6',
+    classifiers=[
+        'Intended Audience :: Science/Research',
+        'License :: OSI Approved :: MIT License',
+        'Programming Language :: Python :: 3',
+        'Topic :: Scientific/Engineering :: Artificial Intelligence',
+    ],
 )
