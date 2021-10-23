@@ -6,8 +6,14 @@ if sys.version_info < (3, 6):
 
 setuptools.setup(
     name="ctc_score",
-    version='0.1.0',
+    version='0.1.0.a1',
     url="https://github.com/tanyuqian/ctc-gen-eval",
+
+    description="CTC: A Unified Framework for Evaluating Natural Language Generation",
+    long_description=open("README.md", "r", encoding='utf-8').read(),
+    long_description_content_type="text/markdown",
+    keywords='CTC Score',
+    license='MIT',
 
     packages=setuptools.find_packages(),
     install_requires=[
