@@ -28,22 +28,22 @@ E_MODEL_CONFIGS = {
 
 DR_MODEL_LINKS = {
     "D-topical_chat": {
-        "fact_to_response": "https://drive.google.com/file/d/1C5__8Xda9GzEQ29W4aFm3F3WReoPn5Zc/view?usp=sharing",
-        "fact_history_to_response": "https://drive.google.com/file/d/18oSTjxmLDERCHCNA91CLkcoT4Vi7PTS0/view?usp=sharing"
+        "fact_to_response": "https://drive.google.com/file/d/1n91TuO1TFsM5ksVuclE2h6tBrHATSgC4/view?usp=sharing",
+        "fact_history_to_response": "https://drive.google.com/file/d/1wLZEPd5K4H-F_wAAjIjQwyXDrzPO9TIg/view?usp=sharing"
     },
     "D-persona_chat": {
-        "fact_to_response": "https://drive.google.com/file/d/1mQqdVPzO9uIkZkIbj834tXtl3Azi-noA/view?usp=sharing",
-        "fact_history_to_response": "https://drive.google.com/file/d/1pDAnLmEulJXuq6HYT9-_4U4tCaoLlJL_/view?usp=sharing"
+        "fact_to_response": "https://drive.google.com/file/d/1hqF8x4UoPvtCdzTus04UiNVFAZBN32Ak/view?usp=sharing",
+        "fact_history_to_response": "https://drive.google.com/file/d/1mgtJKxtSCUNqJ1PITVtjLTXpve4woemf/view?usp=sharing"
     },
     "D-cnndm": {
-        "doc_to_summ": "https://drive.google.com/file/d/1ABC0uNd8GJFBoNVASsl0gGktiNI5-kXW/view?usp=sharing",
-        "summ_to_ref": "https://drive.google.com/file/d/1O7X98C60Rt89_WeTfBziJUqMN3tY7bUl/view?usp=sharing"
+        "doc_to_summ": "https://drive.google.com/file/d/1vahFzi2k74KRtQ6dxXzE5vYLQkartO9S/view?usp=sharing",
+        "summ_to_ref": "https://drive.google.com/file/d/1G7-_RDeHNt2vzouK_sUkFRRvepmWiXID/view?usp=sharing"
     },
     "D-xsum": {
-        "doc_to_summ": "https://drive.google.com/file/d/1nFH16-7HLtpjxmTUx0QvwIw_NbaYpDsG/view?usp=sharing"
+        "doc_to_summ": "https://drive.google.com/file/d/11y1FzAb0XcyDi2yDZXWDB3kpfc7BEXK8/view?usp=sharing"
     },
     "D-yelp": {
-        "sent_to_sent": "https://drive.google.com/file/d/1deuVD8u6ZFIQZwpaZL9v0zcW4r6d37Vf/view?usp=sharing"
+        "sent_to_sent": "https://drive.google.com/file/d/1Fw9Nibmu8-VhdwhPBJSoICgcnqmrxf6C/view?usp=sharing"
     },
     
     "R-topical_chat": {
