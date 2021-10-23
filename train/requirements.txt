@@ -2,7 +2,6 @@ distance
 nltk
 transformers==4.3.3
 pytorch_lightning==1.2.6
-fairseq==0.10.0
 spacy==2.3.0
 datasets==1.5.0
 summa

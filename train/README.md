@@ -14,14 +14,9 @@ pip install -r requirements.txt
 python -m spacy download en
 ```
 
-and remove [this line](https://github.com/pytorch/fairseq/blob/v0.10.0/fairseq/models/roberta/alignment_utils.py#L96) in Fairseq (a too strict assertion):
-```python
-assert torch.all(torch.abs(output.sum(dim=0) - features.sum(dim=0)) < 1e-4)
-```
-
 ## Alignment Model Training
 
-The constructed data and trained models can be directed downloaded [here](https://drive.google.com/drive/folders/1IxqDRKjE1XJzPvAVpvFunyG3InSRofxN?usp=sharing). If you want to run the process, see below.
+The constructed data and trained models can be directed downloaded [here](https://drive.google.com/drive/folders/1Vgt0eOhxwubf-2ukEhkIBHcPbnLd0_uL?usp=sharing). If you want to run the process, see below.
 
 ### Data Construction
 The script to construct data for our discriminative (D) and regression (R) model: [scripts/construct_data.sh](scripts/construct_data.sh). 
