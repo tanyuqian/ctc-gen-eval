@@ -6,25 +6,34 @@ if sys.version_info < (3, 6):
 
 setuptools.setup(
     name="ctc_score",
-    version='0.1.0',
+    version='0.1.0.a3',
     url="https://github.com/tanyuqian/ctc-gen-eval",
+    author="Mingkai Deng*, Bowen Tan*, Zhengzhong Liu, Eric P. Xing, Zhiting Hu, Yuheng Zha",
+    description="CTC: A Unified Framework for Evaluating Natural Language Generation",
+    long_description=open("README.md", "r", encoding='utf-8').read(),
+    long_description_content_type="text/markdown",
+    keywords='CTC Score',
+    license='MIT',
+
+    packages=setuptools.find_packages(),
     install_requires=[
-        'distance',
         'nltk',
         'transformers==4.3.3',
-        'pytorch_lightning==1.2.6',
-        'fairseq==0.10.0',
-        'spacy==2.3.0',
         'datasets==1.5.0',
-        'summa',
         'cleantext',
-        'benepar',
         'bert_score==0.3.9',
-        'texar_pytorch==0.1.3'
     ],
     entry_points={
         'console_scripts': [
             "ctc_score=ctc_score_cli.score:main",
         ]
     },
+    include_package_data=True,
+    python_requires='>=3.6',
+    classifiers=[
+        'Intended Audience :: Science/Research',
+        'License :: OSI Approved :: MIT License',
+        'Programming Language :: Python :: 3',
+        'Topic :: Scientific/Engineering :: Artificial Intelligence',
+    ],
 )
