@@ -18,10 +18,10 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     install_requires=[
         'nltk',
-        'transformers==4.3.3',
-        'datasets==1.5.0',
+        'transformers>=4.3',
+        'datasets>=1.5',
         'cleantext',
-        'bert_score==0.3.9',
+        'bert_score>=0.3',
     ],
     entry_points={
         'console_scripts': [
