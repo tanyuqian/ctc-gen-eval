@@ -46,7 +46,7 @@ def evaluate_style_transfer(args):
 
     scores = []
     for input_sent, hypo in zip(
-            open(args.input_text).readlines(),
+            open(args.input_sent).readlines(),
             open(args.hypo).readlines()):
         input_sent, hypo = input_sent.strip(), hypo.strip()
 
