@@ -46,6 +46,7 @@ class ParaphraseGenerator:
             dist = distance.levenshtein(raw_input_text, output_text)
 
             if dist > max_dist:
+                max_dist = dist
                 output_sent = output_text
 
         return output_sent
