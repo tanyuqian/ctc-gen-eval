@@ -191,7 +191,7 @@ def _download_from_google_drive(
     if response.status_code != 200:
         logging.error(
             "Failed to download %s because of invalid response "
-            "from %s: status_code='%d' reason='%s' content=%s",
+            "from %s: status_code='%d' reason='%s' content=%s, If you see this error message multiple times, you can download it directly. The links are saved in ./ctc_score/config.py. Put the downloaded files in the ~/.cache/ctc_score_models/_dataset_name_/ folder",
             filename,
             response.url,
             response.status_code,
