@@ -41,7 +41,8 @@ class Scorer:
             maybe_download(
                 urls=aligner_link,
                 path=f'{os.getenv("HOME")}/.cache/',
-                filenames=f'ctc_score_models/{self._align}/{aligner_name}.ckpt')
+                filenames=f'ctc_score_models/{self._align}/{aligner_name}.ckpt',
+                num_gdrive_retries=3)
             ckpt_path = f'{os.getenv("HOME")}/.cache/' \
                         f'ctc_score_models/{self._align}/{aligner_name}.ckpt'
 
