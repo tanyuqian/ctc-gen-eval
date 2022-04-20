@@ -17,6 +17,7 @@ Various utilities specific to data processing.
 import collections
 import logging
 import os
+import re
 import sys
 import tarfile
 import urllib.request
@@ -36,17 +37,23 @@ __all__ = [
 Py3 = sys.version_info[0] == 3
 
 
-def maybe_download(urls, path, filenames=None, extract=False):
+def maybe_download(
+    urls: Union[List[str], str],
+    path: Union[str, os.PathLike],
+    filenames: Union[List[str], str, None] = None,
+    extract: bool = False,
+    num_gdrive_retries: int = 1,
+):
     r"""Downloads a set of files.
-
     Args:
         urls: A (list of) URLs to download files.
-        path (str): The destination path to save the files.
+        path: The destination path to save the files.
         filenames: A (list of) strings of the file names. If given,
-            must have the same length with :attr:`urls`. If `None`,
-            filenames are extracted from :attr:`urls`.
-        extract (bool): Whether to extract compressed files.
-
+            must have the same length with ``urls``. If `None`,
+            filenames are extracted from ``urls``.
+        extract: Whether to extract compressed files.
+        num_gdrive_retries: An integer specifying the number of attempts
+            to download file from Google Drive. Default value is 1.
     Returns:
         A list of paths to the downloaded files.
     """
@@ -62,16 +69,17 @@ def maybe_download(urls, path, filenames=None, extract=False):
             filenames = [filenames]
         if len(urls) != len(filenames):
             raise ValueError(
-                '`filenames` must have the same number of elements as `urls`.')
+                "`filenames` must have the same number of elements as `urls`."
+            )
 
     result = []
     for i, url in enumerate(urls):
         if filenames is not None:
             filename = filenames[i]
-        elif 'drive.google.com' in url:
+        elif "drive.google.com" in url:
             filename = _extract_google_drive_file_id(url)
         else:
-            filename = url.split('/')[-1]
+            filename = url.split("/")[-1]
             # If downloading from GitHub, remove suffix ?raw=True
             # from local filename
             if filename.endswith("?raw=true"):
@@ -82,21 +90,26 @@ def maybe_download(urls, path, filenames=None, extract=False):
 
         # if not tf.gfile.Exists(filepath):
         if not os.path.exists(filepath):
-            if 'drive.google.com' in url:
-                filepath = _download_from_google_drive(url, filename, path)
+            if "drive.google.com" in url:
+                filepath = _download_from_google_drive(
+                    url, filename, path, num_gdrive_retries
+                )
             else:
                 filepath = _download(url, filename, path)
 
             if extract:
-                logging.info('Extract %s', filepath)
+                logging.info("Extract %s", filepath)
                 if tarfile.is_tarfile(filepath):
-                    tarfile.open(filepath, 'r').extractall(path)
+                    with tarfile.open(filepath, "r") as tfile:
+                        tfile.extractall(path)
                 elif zipfile.is_zipfile(filepath):
                     with zipfile.ZipFile(filepath) as zfile:
                         zfile.extractall(path)
                 else:
-                    logging.info("Unknown compression type. Only .tar.gz"
-                                 ".tar.bz2, .tar, and .zip are supported")
+                    logging.info(
+                        "Unknown compression type. Only .tar.gz"
+                        ".tar.bz2, .tar, and .zip are supported"
+                    )
     if not is_list:
         return result[0]
     return result
@@ -105,58 +118,87 @@ def maybe_download(urls, path, filenames=None, extract=False):
 # pylint: enable=unused-argument,function-redefined,missing-docstring
 
 
-def _download(url: str, filename: str, path: str) -> str:
+def _download(url: str, filename: str, path: Union[os.PathLike, str]) -> str:
     def _progress_hook(count, block_size, total_size):
-        percent = float(count * block_size) / float(total_size) * 100.
-        sys.stdout.write(f'\r>> Downloading {filename} {percent:.1f}%')
+        percent = float(count * block_size) / float(total_size) * 100.0
+        sys.stdout.write(f"\r>> Downloading {filename} {percent:.1f}%")
         sys.stdout.flush()
 
     filepath = os.path.join(path, filename)
     filepath, _ = urllib.request.urlretrieve(url, filepath, _progress_hook)
     print()
     statinfo = os.stat(filepath)
-    print(f'Successfully downloaded {filename} {statinfo.st_size} bytes')
+    logging.info(
+        "Successfully downloaded %s %d bytes", filename, statinfo.st_size
+    )
 
     return filepath
 
 
 def _extract_google_drive_file_id(url: str) -> str:
     # id is between `/d/` and '/'
-    url_suffix = url[url.find('/d/') + 3:]
-    if url_suffix.find('/') == -1:
+    url_suffix = url[url.find("/d/") + 3 :]
+    if url_suffix.find("/") == -1:
         # if there's no trailing '/'
         return url_suffix
-    file_id = url_suffix[:url_suffix.find('/')]
+    file_id = url_suffix[: url_suffix.find("/")]
     return file_id
 
 
-def _download_from_google_drive(url: str, filename: str, path: str) -> str:
-    r"""Adapted from `https://github.com/saurabhshri/gdrive-downloader`
-    """
+def _download_from_google_drive(
+    url: str, filename: str, path: Union[str, os.PathLike], num_retries: int = 1
+) -> str:
+    r"""Adapted from `https://github.com/saurabhshri/gdrive-downloader`"""
 
+    # pylint: disable=import-outside-toplevel
     try:
         import requests
+        from requests import HTTPError
     except ImportError:
-        print("The requests library must be installed to download files from "
-              "Google drive. Please see: https://github.com/psf/requests")
+        logging.info(
+            "The requests library must be installed to download files from "
+            "Google drive. Please see: https://github.com/psf/requests"
+        )
         raise
 
     def _get_confirm_token(response):
         for key, value in response.cookies.items():
-            if key.startswith('download_warning'):
+            if key.startswith("download_warning"):
                 return value
+        if "Google Drive - Virus scan warning" in response.text:
+            match = re.search("confirm=([0-9A-Za-z_]+)", response.text)
+            if match is None or len(match.groups()) < 1:
+                raise ValueError(
+                    "No token found in warning page from Google Drive."
+                )
+            return match.groups()[0]
         return None
 
     file_id = _extract_google_drive_file_id(url)
 
     gurl = "https://docs.google.com/uc?export=download"
     sess = requests.Session()
-    response = sess.get(gurl, params={'id': file_id}, stream=True)
+    params = {"id": file_id}
+    response = sess.get(gurl, params=params, stream=True)
     token = _get_confirm_token(response)
 
     if token:
-        params = {'id': file_id, 'confirm': token}
+        params = {"id": file_id, "confirm": token}
         response = sess.get(gurl, params=params, stream=True)
+    while response.status_code != 200 and num_retries > 0:
+        response = requests.get(gurl, params=params, stream=True)
+        num_retries -= 1
+    if response.status_code != 200:
+        logging.error(
+            "Failed to download %s because of invalid response "
+            "from %s: status_code='%d' reason='%s' content=%s",
+            filename,
+            response.url,
+            response.status_code,
+            response.reason,
+            response.content,
+        )
+        raise HTTPError(response=response)
 
     filepath = os.path.join(path, filename)
     CHUNK_SIZE = 32768
@@ -165,7 +207,7 @@ def _download_from_google_drive(url: str, filename: str, path: str) -> str:
             if chunk:
                 f.write(chunk)
 
-    print(f'Successfully downloaded {filename}')
+    logging.info("Successfully downloaded %s", filename)
 
     return filepath
 
