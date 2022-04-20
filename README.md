@@ -97,3 +97,10 @@ scorer = DialogScorer(align='D-topical_chat')
 score = scorer.score(fact=fact, dialog_history=dialog_history, hypo=hypo, aspect='engagingness')
 print(score)
 ```
+
+## Loading Issue (rare case)
+If the automatic model loading failed (e.g. shows `Unpickling Error`) multiple times, it is highly recommended to download the models manually. Although we've updated the downloading part of this model, there are some factors we can't control (e.g. gdrive changes their logic, Internet connection...). Follow these steps are recommended to solve the issue:
+* Go to [config.py](https://github.com/tanyuqian/ctc-gen-eval/blob/master/ctc_score/configs.py). You'll find `DR_MODEL_LINKS`. The first level key (e.g. D-topical_chat) indicates `dataset_name` and the second level key (e.g. fact_to_response) indicates the `model_name`
+* Download the models via these links. Rename each models as `model_name.ckpt`
+* Place each model in the `~/.cache/ctc_score_models/{dataset_name}/` folder. For example, the model `fact_to_response.ckpt` of topical_chat dataset should be placed in `~/.cache/ctc_score_models/D-topical_chat/` folder
+* Run `demo.py` to see if the problem is solved.
