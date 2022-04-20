@@ -104,3 +104,5 @@ If the automatic model loading failed (e.g. shows `Unpickling Error`) multiple t
 * Download the models via these links. Rename each models as `model_name.ckpt`
 * Place each model in the `~/.cache/ctc_score_models/{dataset_name}/` folder. For example, the model `fact_to_response.ckpt` of topical_chat dataset should be placed in `~/.cache/ctc_score_models/D-topical_chat/` folder
 * Run `demo.py` to see if the problem is solved.
+
+If you have previously installed the package with pypi, please run `pip install ctc-score --upgrade`. Doing this will update the ctc version installed on your machine.
