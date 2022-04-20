@@ -16,6 +16,10 @@ EMNLP 2021
 *(Note: We provide the user API below. Code to reproduce paper results can be found in the [train/](train/) folder.)*
 
 ## Installation
+The most easy way to try our new framework is by Colab [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/12Dm5uzaVLmGWS273RXElawiW7GxuWvLs?usp=sharing)
+
+If you want to install it on your machine, just follow these steps:
+
 * Python version >= 3.6
 
 Install with pip from PYPI by
