@@ -1,6 +1,7 @@
 import argparse
 
-from ctc_score import StyleTransferScorer, SummarizationScorer, DialogScorer
+from tqdm import tqdm
+from ctc_score import StyleTransferScorer, SummarizationScorer, DialogScorer, FactualConsistencyScorer
 from ctc_score.configs import TASKS, ALIGNS
 
 
@@ -37,6 +38,9 @@ def parse_args():
     # Style Transfer
     parser.add_argument('--input_sent',
                         help='a file with all input sentences, line-by-line')
+    
+    # Factual Consistency
+    parser.add_argument('--grounding', help='a file with all grounding texts, line-by-line')
 
     return parser.parse_args()
 
@@ -105,6 +109,26 @@ def evaluate_dialog(args):
 
     return scores
 
+def evaluate_factual_consistency(args):
+    scorer = FactualConsistencyScorer(align=args.align)
+
+    scores = []
+    for grounding, hypo in tqdm(zip(
+            open(args.grounding).readlines(),
+            open(args.hypo).readlines())):
+        grounding, hypo = \
+            grounding.strip(), hypo.strip()
+
+        if grounding == '' and hypo == '':
+            continue
+        scores.append(scorer.score(
+            grounding=grounding,
+            hypo=hypo,
+            aspect=args.aspect,
+            remove_stopwords=args.remove_stopwords))
+
+    return scores
+
 
 def main():
     args = parse_args()
@@ -115,6 +139,8 @@ def main():
         scores = evaluate_summarization(args)
     elif args.task == 'dialog':
         scores = evaluate_dialog(args)
+    elif args.task == 'factual_consistency':
+        scores = evaluate_factual_consistency(args)
     else:
         raise ValueError(f'\"task\" should be one of {TASKS}.')
 

@@ -1,7 +1,8 @@
 TASKS = [
     'style_transfer',
     'summarization',
-    'dialog'
+    'dialog',
+    'factual_consistency'
 ]
 
 ALIGNS = [
@@ -13,6 +14,7 @@ ALIGNS = [
     "D-cnndm",
     "D-xsum",
     "D-yelp",
+    "D-mix-albert",
     "R-topical_chat",
     "R-persona_chat",
     "R-cnndm",
@@ -44,6 +46,9 @@ DR_MODEL_LINKS = {
     },
     "D-yelp": {
         "sent_to_sent": "https://drive.google.com/file/d/1Fw9Nibmu8-VhdwhPBJSoICgcnqmrxf6C/view?usp=sharing"
+    },
+    "D-mix-albert": {
+        "doc_to_summ": "https://drive.google.com/file/d/1sEhsnMpZnv2dfZKCoEIP3e7jYTvNXgDp/view?usp=sharing"
     },
     
     "R-topical_chat": {

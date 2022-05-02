@@ -3,4 +3,5 @@ from ctc_score.scorer import Scorer
 from ctc_score.style_transfer_scorer import StyleTransferScorer
 from ctc_score.summarization_scorer import SummarizationScorer
 from ctc_score.dialog_scorer import DialogScorer
+from ctc_score.factual_consistency_scorer import FactualConsistencyScorer
 from ctc_score.download import maybe_download
