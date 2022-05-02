@@ -1,4 +1,4 @@
-# Factual Consistency Metric for TRUE
+# Factual Consistency Metric
 
 This readme describes how to load and call the metric used to compute the results in the paper \
 **[TRUE: Re-evaluating Factual Consistency Evaluation](https://arxiv.org/pdf/2204.04991.pdf)**. 
