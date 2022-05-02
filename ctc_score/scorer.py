@@ -47,8 +47,11 @@ class Scorer:
                         f'ctc_score_models/{self._align}/{aligner_name}.ckpt'
 
             if self._align.startswith('D'):
+                model = 'tals/albert-xlarge-vitaminc-mnli' if 'albert' in self._align else 'roberta-large'
+                
                 aligner = DiscriminativeAligner(
-                    aggr_type=self._aggr_type).to(self._device)
+                    aggr_type=self._aggr_type,
+                    model=model).to(self._device)
                 aligner.load_state_dict(torch.load(ckpt_path))
                 aligner.eval()
             else:

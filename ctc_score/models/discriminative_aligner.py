@@ -7,28 +7,29 @@ from torch import nn
 
 from ctc_score.models.aligner import Aligner
 
-from transformers import AdamW, get_linear_schedule_with_warmup, AutoTokenizer
-from transformers import RobertaConfig, RobertaModel, RobertaTokenizerFast
+from transformers import AutoTokenizer, RobertaModel, AutoModel
 
 from ctc_score.data_utils.data_utils import TokenClassificationExample, \
     text_clean, get_words
 
-
-INIT = 'roberta.large'
 MAX_LENGTH = 512
 
 
 class DiscriminativeAligner(Aligner, nn.Module):
-    def __init__(self, aggr_type):
+    def __init__(self, aggr_type, model='roberta-large'):
+        assert model in ['roberta-large', 'tals/albert-xlarge-vitaminc-mnli']
         Aligner.__init__(self, aggr_type)
         nn.Module.__init__(self)
-        self._roberta = RobertaModel.from_pretrained('roberta-large')
-        self._roberta_tokenizer = RobertaTokenizerFast.from_pretrained(
-            'roberta-large')
-
-        self._classifier = nn.Linear(
-            self._roberta.config.hidden_size, 2)
-        self._tokenizer = AutoTokenizer.from_pretrained("roberta-large")
+        if model == 'roberta-large': 
+            self._roberta = RobertaModel.from_pretrained('roberta-large')
+            self._classifier = nn.Linear(self._roberta.config.hidden_size, 2)
+        else:
+            self._model = AutoModel.from_pretrained(model)
+            self._classifier = nn.Linear(self._model.config.hidden_size, 2)
+        self._tokenizer = AutoTokenizer.from_pretrained(model)
+        self._space_char = '▁' if 'albert' in model else 'Ġ'
+        self._bos_id = self._tokenizer.convert_tokens_to_ids(self._tokenizer.bos_token)
+        
 
         self._hparams = None
 
@@ -36,16 +37,19 @@ class DiscriminativeAligner(Aligner, nn.Module):
         if len(self._tokenizer(input_text)['input_ids']) > MAX_LENGTH:
             print('Length of input text exceeds max length! Skipping')
             return None
-
-        tokens = self._roberta_tokenizer(
-            input_text, context, return_tensors='pt').to('cuda')
-        tokens = {'input_ids': tokens['input_ids'][:, :MAX_LENGTH],
-                  'attention_mask': tokens['attention_mask'][:, :MAX_LENGTH]}
-        features = self._roberta(**tokens).last_hidden_state[0]
+        
+        tokens = (self._tokenizer(input_text, 
+                                  context, 
+                                  truncation='only_second',
+                                  max_length=MAX_LENGTH,
+                                  return_tensors='pt')
+                  .to(0))
+        if self._roberta: self._model = self._roberta
+        features = self._model(**tokens).last_hidden_state[0]
 
         try:
             len_input_text = len(
-                self._roberta_tokenizer(input_text)['input_ids'])
+                self._tokenizer(input_text)['input_ids'])
             word_features = self.extract_features_aligned_to_words(
                 input_text=input_text,
                 words=words,
@@ -60,7 +64,7 @@ class DiscriminativeAligner(Aligner, nn.Module):
         return word_logits
 
     def extract_features_aligned_to_words(self, input_text, words, features):
-        bpe_toks = self._roberta_tokenizer(
+        bpe_toks = self._tokenizer(
             input_text, return_tensors='pt')['input_ids'][0]
 
         alignment = self.align_bpe_to_words(bpe_toks, words)
@@ -114,61 +118,37 @@ class DiscriminativeAligner(Aligner, nn.Module):
             List[str]: mapping from *other_tokens* to corresponding *bpe_tokens*.
         """
         assert bpe_tokens.dim() == 1
-        assert bpe_tokens[0] == 0
+        assert bpe_tokens[0] == self._bos_id
 
         def clean(text):
             return text.strip()
-
-        # remove whitespaces to simplify alignment
-        bpe_tokens = [self._roberta_tokenizer.decode([x]) for x in bpe_tokens]
-        bpe_tokens = [clean(tok) if tok not in ['<s>', '</s>']
-                      else '' for tok in bpe_tokens]
-
-        other_tokens = [clean(str(o)) for o in other_tokens]
-
-        # strip leading <s>
-        bpe_tokens = bpe_tokens[1:]
-        assert "".join(bpe_tokens) == "".join(other_tokens), 'bpe tokens:{}, other tokens:{}'.format(
-            ''.join(bpe_tokens), ''.join(other_tokens))
-
-        # create alignment from every word to a list of BPE tokens
+        
+        orig_bpe_toks = self._tokenizer.convert_ids_to_tokens(bpe_tokens)[1:-1]
+        
         alignment = []
-        bpe_toks = filter(
-            lambda item: item[1] != "", enumerate(bpe_tokens, start=1))
-        j, bpe_tok = next(bpe_toks)
-        for other_tok in other_tokens:
-            bpe_indices = []
-            while True:
-                if other_tok.startswith(bpe_tok):
-                    bpe_indices.append(j)
-                    other_tok = other_tok[len(bpe_tok):]
-                    try:
-                        j, bpe_tok = next(bpe_toks)
-                    except StopIteration:
-                        j, bpe_tok = None, None
-                elif bpe_tok.startswith(other_tok):
-                    # other_tok spans multiple BPE tokens
-                    bpe_indices.append(j)
-                    bpe_tok = bpe_tok[len(other_tok):]
-                    other_tok = ""
-                else:
-                    raise Exception(
-                        'Cannot align "{}" and "{}"'.format(other_tok, bpe_tok))
-                if other_tok == "":
-                    break
-            assert len(bpe_indices) > 0
-            alignment.append(bpe_indices)
-        assert len(alignment) == len(other_tokens)
-
+        bpe_indices = []
+        for i, tok in enumerate(orig_bpe_toks): 
+            if tok.startswith(self._space_char) and len(bpe_indices) > 0: 
+                alignment.append(bpe_indices)
+                bpe_indices = [i+1]
+            else: 
+                bpe_indices.append(i+1)
+        alignment.append(bpe_indices)
         return alignment
 
     def align(self, input_text, context):
         input_text, context = text_clean(input_text), text_clean(context)
 
-        input_text = self._roberta_tokenizer.decode(
-            self._roberta_tokenizer(input_text, return_tensors='pt')['input_ids'][0][:MAX_LENGTH // 2])
+        input_text = self._tokenizer.decode(
+            self._tokenizer(input_text, return_tensors='pt')['input_ids'][0][:MAX_LENGTH // 2])
 
-        input_text = input_text.replace('<s>', '').replace('</s>', '')
+        
+        input_text = (input_text
+                      .replace(self._tokenizer.bos_token, '')
+                      .replace(self._tokenizer.eos_token, '')
+                      .replace(self._tokenizer.unk_token, '')
+                      .replace('  ', ' ')
+                      .strip(' '))
         word_logits = self(
             input_text=input_text,
             words=get_words(input_text),
