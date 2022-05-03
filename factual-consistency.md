@@ -41,7 +41,7 @@ ctc_score
 
 ## ROC AUC Results
 
-| Dataset | Q<sup>2</sup> (Metric) | ANLI | SC (ZS) | CTC (Ours) | F1 | BLEURT | QuestEval | FactCC | BARTScore | BERTScore |
+| Dataset | Q<sup>2</sup> (Metric) | ANLI | SC (ZS) | *CTC (Ours)* | F1 | BLEURT | QuestEval | FactCC | BARTScore | BERTScore |
 | ---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
 | **FRANK** | 87.8 | **89.4** | 89.1 | 87.5 | 76.1 | 82.8 | 84.0 | 76.4 | 86.1 | 84.3 |
 | **SummEval** | 78.8 | 80.5 | **81.7** | 76.0 | 61.4 | 66.7 | 70.1 | 75.9 | 73.5 | 77.2 |
