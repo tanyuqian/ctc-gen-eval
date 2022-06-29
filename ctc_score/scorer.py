@@ -51,8 +51,8 @@ class Scorer:
                 
                 aligner = DiscriminativeAligner(
                     aggr_type=self._aggr_type,
-                    model=model).to(self._device)
-                aligner.load_state_dict(torch.load(ckpt_path))
+                    model=model, device=self._device).to(self._device)
+                aligner.load_state_dict(torch.load(ckpt_path, map_location=torch.device(self._device)))
                 aligner.eval()
             else:
                 assert self._align.startswith('R')

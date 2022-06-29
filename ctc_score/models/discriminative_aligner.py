@@ -16,7 +16,7 @@ MAX_LENGTH = 512
 
 
 class DiscriminativeAligner(Aligner, nn.Module):
-    def __init__(self, aggr_type, model='roberta-large'):
+    def __init__(self, aggr_type, model='roberta-large', device='cuda'):
         assert model in ['roberta-large', 'tals/albert-xlarge-vitaminc-mnli']
         Aligner.__init__(self, aggr_type)
         nn.Module.__init__(self)
@@ -32,6 +32,7 @@ class DiscriminativeAligner(Aligner, nn.Module):
         
 
         self._hparams = None
+        self._device = device
 
     def forward(self, input_text, words, context):
         if len(self._tokenizer(input_text)['input_ids']) > MAX_LENGTH:
@@ -43,7 +44,7 @@ class DiscriminativeAligner(Aligner, nn.Module):
                                   truncation='only_second',
                                   max_length=MAX_LENGTH,
                                   return_tensors='pt')
-                  .to(0))
+                  .to(self._device))
         if self._roberta: self._model = self._roberta
         features = self._model(**tokens).last_hidden_state[0]
 
