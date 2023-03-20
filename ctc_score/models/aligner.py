@@ -19,7 +19,7 @@ class Aligner:
 
         scores_to_aggr = []
         for token, score in zip(tokens, token_scores):
-            if (token.lower() not in en_stopwords) or (not remove_stopwords):
+            if (token.strip().lower() not in en_stopwords) or (not remove_stopwords):
                 scores_to_aggr.append(score)
 
         if self._aggr_type == 'mean':
