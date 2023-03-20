@@ -40,10 +40,6 @@ class BERTAligner(BERTScorer, Aligner):
                     for i in sent_encode(self._tokenizer, candidate)][1:-1]
         sim = sim[1:-1, 1:-1]
 
-        if self.rescale_with_baseline:
-            sim = (sim - self.baseline_vals[2].item()) / \
-                  (1 - self.baseline_vals[2].item())
-
         return sim, r_tokens, h_tokens
 
     def align(self, input_text, context):
